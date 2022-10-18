@@ -29,8 +29,6 @@ public class Order {
     private BigDecimal totalPrice;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "order")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Set<OrderItem> orderItems;
 
 }

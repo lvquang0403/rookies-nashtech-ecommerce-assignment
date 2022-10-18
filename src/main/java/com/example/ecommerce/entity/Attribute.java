@@ -7,6 +7,7 @@ import java.util.Set;
 
 
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -21,7 +22,5 @@ public class Attribute {
     private String description;
 
     @ManyToMany(cascade = CascadeType.ALL,mappedBy = "attributes")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Set<Product> products;
 }

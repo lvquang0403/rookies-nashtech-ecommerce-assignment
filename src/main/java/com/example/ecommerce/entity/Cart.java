@@ -19,7 +19,5 @@ public class Cart {
     private Date createdDate;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "cart")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Set<CartItem> cartItems;
 }

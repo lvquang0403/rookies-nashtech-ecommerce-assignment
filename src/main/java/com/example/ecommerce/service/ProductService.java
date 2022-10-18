@@ -1,18 +1,21 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.dto.ListProductDTO;
+import com.example.ecommerce.dto.ProductDTO;
+import com.example.ecommerce.dto.ProductPostDTO;
 import com.example.ecommerce.entity.Product;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface ProductService {
-    Product createProduct(Product product);
+    Product createProduct(ProductPostDTO productDTO);
+    ProductDTO findById(Long id);
     Page<Product> findAll(int pageNumber, int pageSize);
-    List<Product> findAll();
-    Optional<Product> findById(Long id);
-    Product updatedProductById(Product product, Long productId);
-
-    Page<Product> findByCategory(int pageNumber, int pageSize, Long categoryId);
+    ListProductDTO findByConditions(int pageNumber, int pageSize, String productName, String typeName);
+    ListProductDTO findByCategoryId(int pageNumber, int pageSize, Long categoryId);
+    Product updatedProductById(ProductDTO productDTO, Long productId);
+    List<ProductDTO> convertToProductDTO(List<Product> products);
+    void deleteProductById(Long id);
 }

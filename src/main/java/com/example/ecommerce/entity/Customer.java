@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 @Data
@@ -28,8 +29,12 @@ public class Customer {
     private String email;
     @Column
     private Date createdDate;
+    @Column
+    private String userName;
+    @Column
+    private String password;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Role> roles;
     @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Account account;
 }

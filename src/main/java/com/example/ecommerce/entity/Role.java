@@ -18,7 +18,5 @@ public class Role {
     private String roleName;
 
     @ManyToMany(mappedBy = "roles",cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Set<Account> accounts;
+    private Set<Customer> customers;
 }

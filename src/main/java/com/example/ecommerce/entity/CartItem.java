@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Table
 public class CartItem extends Item {
     @Id
-    @Column
     @GeneratedValue
     private Long cartItemId;
 

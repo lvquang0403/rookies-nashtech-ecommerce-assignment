@@ -18,7 +18,7 @@ public class Rating {
     @Column
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "ratings")
     private Product product;
 }
