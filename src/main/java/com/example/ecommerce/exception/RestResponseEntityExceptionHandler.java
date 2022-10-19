@@ -17,6 +17,13 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler(DuplicateException.class)
     public ResponseEntity<ResponseObject> handleDuplicateException(DuplicateException ex){
         ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.toString(), ex.getMessage(), null);
-        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(StillRelationException.class)
+    public ResponseEntity<ResponseObject> handleStillRelationException(StillRelationException ex){
+        ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.toString(), ex.getMessage(), null);
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
 }

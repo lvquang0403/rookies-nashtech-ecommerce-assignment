@@ -1,7 +1,7 @@
 package com.example.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -35,11 +35,11 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "products")
     private Category category;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany
     private Set<Attribute> attributes;
 
-    @OneToMany(fetch=FetchType.EAGER, mappedBy = "product")
-    private Set<Rating> ratings;
+    @OneToMany(mappedBy = "product")
+    private Set<Rating> ratingProducts;
 
     public Product(String productName, String description, BigDecimal price, Date createdDate, Date updatedDate, Category category, Set<Attribute> attributes, Set<Rating> ratings) {
         this.productName = productName;
@@ -49,6 +49,6 @@ public class Product {
         this.updatedDate = updatedDate;
         this.category = category;
         this.attributes = attributes;
-        this.ratings = ratings;
+        this.ratingProducts = ratings;
     }
 }
