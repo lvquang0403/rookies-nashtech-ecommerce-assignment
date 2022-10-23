@@ -1,29 +1,24 @@
 package com.example.ecommerce.service.impl;
-
-import com.example.ecommerce.entity.Category;
+import com.example.ecommerce.dto.RatingDTO;
 import com.example.ecommerce.entity.Product;
-import com.example.ecommerce.entity.Rating;
+import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.ProductRepository;
-import org.junit.jupiter.api.AfterEach;
+import com.example.ecommerce.service.RatingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-class ProductRepositoryTest {
+public class RatingRepositoryAndServiceTest {
     @Autowired
     private ProductRepository productRepository;
-    Product product;
+    @Autowired
+    private RatingService ratingService;
     @BeforeEach
     void before(){
         System.out.println(productRepository.save(Product.builder()
@@ -41,27 +36,12 @@ class ProductRepositoryTest {
                 .description("new 100%")
                 .price(BigDecimal.valueOf(1200))
                 .build());
-    }
-
-    @AfterEach
-    void tearDown() {
-        productRepository.deleteAll();
-    }
-    @Test
-    void createProduct_ShouldReturnProductId_WhenInsertSuccessfully() {
-        System.out.println(productRepository.save(product));
-        Optional<Product> foundProduct = productRepository.findById(1L);
-        foundProduct.ifPresent(value -> assertThat(value.getProductId(), is(product.getProductId())));
+        ratingService.createRating(new RatingDTO("Quang","good", 2L));
     }
 
     @Test
-    void updateProduct_ShouldReturnProductName_WhenUpdateSuccessfully() {
-        productRepository.save(product);
-        product.setProductName("example");
-        productRepository.save(product);
-        Optional<Product> foundProduct = productRepository.findById(product.getProductId());
-        foundProduct.ifPresent(value -> assertThat(value.getProductName(), is(product.getProductName())));
+    void createProduct_ShouldReturnProductId_WhenInsertSuccessfully() throws Exception {
+        assertThrows(NotFoundException.class, () -> ratingService.findById(2L));
     }
-
 
 }

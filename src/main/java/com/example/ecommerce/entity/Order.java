@@ -28,7 +28,7 @@ public class Order {
     @Column
     private BigDecimal totalPrice;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "order")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "order")
     private Set<OrderItem> orderItems;
 
 }

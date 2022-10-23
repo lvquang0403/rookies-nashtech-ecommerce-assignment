@@ -28,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category createCategory(Category category) {
         String categoryName = category.getCategoryName();
-        if(categoryRepository.findByCategoryName(categoryName).isPresent()){
+        if(categoryRepository.findByCategoryNameIgnoreCase(categoryName).isPresent()){
             throw new DuplicateException(String.format("Category with name %s already exists",categoryName));
         }
 

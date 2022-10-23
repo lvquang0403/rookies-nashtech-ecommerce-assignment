@@ -1,6 +1,7 @@
 package com.example.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Table
 public class Category {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
     @Column
     private String categoryName;
@@ -26,4 +27,7 @@ public class Category {
     @OneToMany(mappedBy = "category")
     @JsonIgnore
     private Set<Product> products;
+
+    public Category(String categoryName) {
+    }
 }

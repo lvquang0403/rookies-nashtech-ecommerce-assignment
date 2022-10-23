@@ -4,12 +4,12 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @MappedSuperclass
-public class Item {
+public abstract class Item {
     private Integer quantity;
     private BigDecimal price;
     private BigDecimal totalPrice;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Product product;
 
 }

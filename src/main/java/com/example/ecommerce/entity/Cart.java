@@ -13,11 +13,11 @@ import java.util.Set;
 @Table
 public class Cart {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
     @Column
     private Date createdDate;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "cart")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "cart")
     private Set<CartItem> cartItems;
 }

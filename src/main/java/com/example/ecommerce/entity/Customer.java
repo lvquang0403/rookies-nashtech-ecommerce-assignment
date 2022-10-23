@@ -1,6 +1,7 @@
 package com.example.ecommerce.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,10 +13,11 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table
 public class Customer {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
     @Column
     private String firstName;
@@ -36,5 +38,6 @@ public class Customer {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Role> roles;
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cartId")
     private Cart cart;
 }

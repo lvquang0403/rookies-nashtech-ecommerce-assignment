@@ -11,10 +11,10 @@ import javax.persistence.*;
 @Table
 public class CartItem extends Item {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cartItems")
+    @ManyToOne
+    @JoinColumn(name = "cartId")
     private Cart cart;
 }

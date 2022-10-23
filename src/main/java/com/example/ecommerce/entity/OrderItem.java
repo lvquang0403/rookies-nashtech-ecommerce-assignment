@@ -17,7 +17,7 @@ public class OrderItem extends Item{
     @GeneratedValue
     private Long orderItemId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "orderItems")
     private Order order;
 }

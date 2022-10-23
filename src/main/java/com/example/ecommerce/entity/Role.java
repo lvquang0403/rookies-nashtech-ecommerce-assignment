@@ -12,7 +12,7 @@ import java.util.Set;
 @Table
 public class Role {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roleId;
     @Column
     private String roleName;
