@@ -1,9 +1,15 @@
 package com.example.ecommerce.config;
 
+import com.example.ecommerce.dto.RatingDTO;
 import com.example.ecommerce.entity.Category;
+import com.example.ecommerce.entity.Customer;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.repository.CategoryRepository;
+import com.example.ecommerce.repository.CustomerRepository;
 import com.example.ecommerce.repository.ProductRepository;
+import com.example.ecommerce.repository.RatingRepository;
+import com.example.ecommerce.service.ProductService;
+import com.example.ecommerce.service.RatingService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,10 +19,19 @@ import java.math.BigDecimal;
 public class MyRunner implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final RatingService ratingService;
+    private final ProductService productService;
+    private final CustomerRepository customerRepository;
 
-    public MyRunner(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    private final RatingRepository ratingRepository;
+
+    public MyRunner(ProductRepository productRepository, CategoryRepository categoryRepository, RatingService ratingService, ProductService productService, CustomerRepository customerRepository, RatingRepository ratingRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.ratingService = ratingService;
+        this.productService = productService;
+        this.customerRepository = customerRepository;
+        this.ratingRepository = ratingRepository;
     }
 
     @Override
@@ -46,10 +61,16 @@ public class MyRunner implements CommandLineRunner {
                 .category(categoryRepository.save(Category.builder().categoryName("Macbook").build()))
                 .build());
         productRepository.save(Product.builder()
-                .productName("Macbook Pro 15 2021")
+                .productName("Macbook Pro 15 20222")
                 .description("new 100%")
                 .price(BigDecimal.valueOf(2000))
                 .category(categoryRepository.save(Category.builder().categoryName("Macbook").build()))
                 .build());
+        //insert Rating
+        customerRepository.save(Customer.builder().userName("Quang").build());
+        ratingService.createRating(new RatingDTO("Quang","good",4, 2L));
+        ratingService.createRating(new RatingDTO("Quang","good dd",4, 3L));
+
+
     }
 }

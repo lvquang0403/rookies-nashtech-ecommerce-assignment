@@ -3,6 +3,7 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.dto.ListProductDTO;
 import com.example.ecommerce.dto.ProductDTO;
 import com.example.ecommerce.dto.ProductPostDTO;
+import com.example.ecommerce.dto.ResponseProductDTO;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.response.ResponseObject;
 import com.example.ecommerce.service.ProductService;
@@ -46,13 +47,13 @@ public class ProductController {
 
     @PostMapping("createProduct")
     @ResponseBody
-    ResponseEntity<Product> createProduct(@RequestBody ProductPostDTO productDTO){
+    ResponseEntity<ResponseProductDTO> createProduct(@RequestBody ProductDTO productDTO){
         return ResponseEntity.ok(productService.createProduct(productDTO));
     }
 
     @PutMapping("updateProduct/{productId}")
     @ResponseBody
-    ResponseEntity<Product> updateProduct(
+    ResponseEntity<ResponseProductDTO   > updateProduct(
             @PathVariable Long productId,
             @RequestBody ProductDTO productDTO)
     {

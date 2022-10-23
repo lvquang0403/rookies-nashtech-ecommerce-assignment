@@ -1,7 +1,10 @@
 package com.example.ecommerce.entity;
-
+import com.example.ecommerce.dto.ResponseProductDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -15,7 +18,7 @@ import java.util.Set;
 @Table
 public class Product {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
     @Column
     private String productName;
@@ -32,23 +35,36 @@ public class Product {
 //    @EqualsAndHashCode.Exclude
 //    @ToString.Exclude
 //    private Set<Image> images;
-    @ManyToOne
-    @JoinColumn(name = "products")
+    @ManyToOne()
+    @JoinColumn(name = "categoryId")
     private Category category;
-    @ManyToMany
-    private Set<Attribute> attributes;
 
     @OneToMany(mappedBy = "product")
-    private Set<Rating> ratingProducts;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<AttributeProduct> attributeProducts;
 
-    public Product(String productName, String description, BigDecimal price, Date createdDate, Date updatedDate, Category category, Set<Attribute> attributes, Set<Rating> ratings) {
+    @OneToMany(mappedBy = "product")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Set<Rating> ratings;
+
+    public Product(String productName, String description, BigDecimal price, Date createdDate, Date updatedDate, Category category, Set<AttributeProduct> attributeProducts, Set<Rating> ratings) {
         this.productName = productName;
         this.description = description;
         this.price = price;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.category = category;
-        this.attributes = attributes;
-        this.ratingProducts = ratings;
+        this.attributeProducts = attributeProducts;
+        this.ratings = ratings;
+    }
+
+    public static ResponseProductDTO convertToResponseProductDTO(Product product){
+        return new ResponseProductDTO(
+                product.getProductId(),
+                product.getProductName(),
+                product.getCreatedDate(),
+                product.getUpdatedDate()
+        );
     }
 }

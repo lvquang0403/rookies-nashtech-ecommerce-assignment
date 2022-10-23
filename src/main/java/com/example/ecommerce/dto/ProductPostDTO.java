@@ -13,7 +13,7 @@ public class ProductPostDTO {
     private String productName;
     private String description;
     private BigDecimal price;
-    private List<Long> attributeIds;
+    private List<AttributeDTO> attributeDTOS;
     private Long categoryId;
 
 }
