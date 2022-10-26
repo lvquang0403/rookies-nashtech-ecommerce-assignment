@@ -1,5 +1,6 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.response;
 
+import com.example.ecommerce.dto.AttributeDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductDTO {
+public class ProductViewHomeDTO {
     private Long productId;
     private String productName;
     private String description;

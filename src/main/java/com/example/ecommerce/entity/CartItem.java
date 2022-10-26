@@ -3,10 +3,13 @@ package com.example.ecommerce.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@Builder
 @Entity
 @Table
 public class CartItem extends Item {
@@ -17,4 +20,10 @@ public class CartItem extends Item {
     @ManyToOne
     @JoinColumn(name = "cartId")
     private Cart cart;
+
+
+    public CartItem(Integer quantity, BigDecimal price, BigDecimal totalPrice, Product product, Cart cart) {
+        super(quantity, price, totalPrice, product);
+        this.cart = cart;
+    }
 }
