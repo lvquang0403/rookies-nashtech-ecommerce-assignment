@@ -1,6 +1,6 @@
 package com.example.ecommerce.service.impl;
 
-import com.example.ecommerce.dto.CartDTO;
+import com.example.ecommerce.dto.response.CartDTO;
 import com.example.ecommerce.entity.Cart;
 import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.CartRepository;

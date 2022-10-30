@@ -1,6 +1,6 @@
 package com.example.ecommerce.entity;
 
-import com.example.ecommerce.dto.CartDTO;
+import com.example.ecommerce.dto.response.CartDTO;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -23,10 +23,9 @@ public class Cart {
     @Column
     private Date createdDate;
 
-    @OneToMany(mappedBy = "cart")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.REMOVE)
     private Set<CartItem> cartItems;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "customerId")
     private Customer customer;
 

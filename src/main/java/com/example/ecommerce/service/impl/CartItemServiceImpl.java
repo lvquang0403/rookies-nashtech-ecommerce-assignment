@@ -1,9 +1,10 @@
 package com.example.ecommerce.service.impl;
 
-import com.example.ecommerce.dto.CartDTO;
-import com.example.ecommerce.dto.ItemPostDTO;
+import com.example.ecommerce.config.security.service.UserDetailsImpl;
+import com.example.ecommerce.dto.response.CartDTO;
+import com.example.ecommerce.dto.request.ItemPostDTO;
 import com.example.ecommerce.dto.response.ItemViewDTO;
-import com.example.ecommerce.dto.ListCartItemDTO;
+import com.example.ecommerce.dto.response.ListCartItemDTO;
 import com.example.ecommerce.entity.Cart;
 import com.example.ecommerce.entity.CartItem;
 import com.example.ecommerce.entity.Customer;
@@ -16,6 +17,7 @@ import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.service.CartItemService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -40,7 +42,10 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public ListCartItemDTO findByCustomerId(int pageNumber, int pageSize, Long customerId) {
+    public ListCartItemDTO findByCustomerId(int pageNumber, int pageSize) {
+        UserDetailsImpl userDetails =
+                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long customerId = userDetails.getCustomerId();
         Customer foundCustomer = customerRepository.findById(customerId)
                 .orElseThrow(
                         () -> new NotFoundException(String.format("Customer with id %s is not found", customerId))
@@ -61,17 +66,20 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartDTO addToCart(ItemPostDTO itemDTO) {
+        UserDetailsImpl userDetails =
+                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long customerId = userDetails.getCustomerId();
         Product foundProduct = productRepository.findById(itemDTO.getProductId()).orElseThrow(
                 () -> new NotFoundException(String.format("Product with id %s is not found", itemDTO.getProductId()))
         );
         Date currentDay = Date.valueOf(LocalDate.now());
-        Cart cart = cartRepository.findByCustomerCustomerId(itemDTO.getCustomerId())
+        Cart cart = cartRepository.findByCustomerCustomerId(customerId)
                 .orElseGet(() -> {
                      Cart newCart = cartRepository.save(Cart.builder()
                                     .createdDate(currentDay)
-                                    .customer(customerRepository.findById(itemDTO.getCustomerId()).get())
+                                    .customer(customerRepository.findById(customerId).get())
                                     .build());
-                    Optional<Customer> foundCustomer = customerRepository.findById(itemDTO.getCustomerId());
+                    Optional<Customer> foundCustomer = customerRepository.findById(customerId);
                     foundCustomer.ifPresent(customer -> customer.setCart(newCart));
                     return customerRepository.save(foundCustomer.get()).getCart();
                 });
@@ -98,7 +106,10 @@ public class CartItemServiceImpl implements CartItemService {
 
 
     @Override
-    public List<ItemPostDTO> updateCartItemByCustomerId(Long customerId, List<ItemPostDTO> items) {
+    public List<ItemPostDTO> updateCartItems(List<ItemPostDTO> items) {
+        UserDetailsImpl userDetails =
+                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long customerId = userDetails.getCustomerId();
         Cart cart = cartRepository.findByCustomerCustomerId(customerId).orElseThrow(
                 () -> new NotFoundException(String.format("Cart of customer with id %s not exists", customerId))
         );

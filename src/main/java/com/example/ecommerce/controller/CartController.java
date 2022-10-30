@@ -1,12 +1,14 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.dto.CartDTO;
-import com.example.ecommerce.dto.ItemPostDTO;
-import com.example.ecommerce.dto.ListCartItemDTO;
+import com.example.ecommerce.dto.response.CartDTO;
+import com.example.ecommerce.dto.request.ItemPostDTO;
+import com.example.ecommerce.dto.response.ListCartItemDTO;
 import com.example.ecommerce.service.CartItemService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,28 +21,29 @@ public class CartController {
     }
 
 
-    @PostMapping
-    ResponseEntity<CartDTO> addProductToCart(@RequestBody ItemPostDTO item){
+    @PostMapping("addToCart")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<CartDTO> addProductToCart(@RequestBody @Valid ItemPostDTO item){
         return ResponseEntity.ok(cartItemService.addToCart(item));
     }
 
-    @GetMapping("getByCustomerId/{customerId}")
-    ResponseEntity<ListCartItemDTO> getByCustomerId(
-            @PathVariable Long customerId,
+    @GetMapping("getCartItems")
+    ResponseEntity<ListCartItemDTO> getCartItems(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize)
     {
-        return ResponseEntity.ok(cartItemService.findByCustomerId(pageNumber, pageSize, customerId));
+        return ResponseEntity.ok(cartItemService.findByCustomerId(pageNumber, pageSize));
     }
 
-    @PutMapping("updateByCustomerId/{customerId}")
+    @PutMapping("updateCartItems/{customerId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<List<ItemPostDTO>> updateCartItem(
-            @PathVariable Long customerId,
-            @RequestBody List<ItemPostDTO> items){
-        return ResponseEntity.ok(cartItemService.updateCartItemByCustomerId(customerId,items));
+            @RequestBody @Valid List<ItemPostDTO> items){
+        return ResponseEntity.ok(cartItemService.updateCartItems(items));
     }
 
     @DeleteMapping("/{cartItemId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<?> deleteById(@PathVariable Long cartItemId){
         return ResponseEntity.ok("Successfully");
     }

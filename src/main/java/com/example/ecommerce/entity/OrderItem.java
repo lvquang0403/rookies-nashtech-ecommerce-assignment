@@ -1,14 +1,15 @@
 package com.example.ecommerce.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@Builder
 @Entity
 @Table
 public class OrderItem extends Item{
@@ -18,6 +19,11 @@ public class OrderItem extends Item{
     private Long orderItemId;
 
     @ManyToOne
-    @JoinColumn(name = "orderItems")
+    @JoinColumn(name = "orderId")
     private Order order;
+
+    public OrderItem(Integer quantity, BigDecimal price, BigDecimal totalPrice, Product product, Order newOrder) {
+        super(quantity, price, totalPrice, product);
+        this.order = newOrder;
+    }
 }

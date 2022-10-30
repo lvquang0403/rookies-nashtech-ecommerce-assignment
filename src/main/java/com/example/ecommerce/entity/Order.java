@@ -9,7 +9,9 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Builder
+@Getter
+@Setter
 @Table(name = "orders")
 public class Order {
     @Id
@@ -28,7 +30,11 @@ public class Order {
     @Column
     private BigDecimal totalPrice;
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "order")
+    @OneToMany(mappedBy = "order")
     private Set<OrderItem> orderItems;
+
+    @ManyToOne
+    @JoinColumn(name = "customerId")
+    private Customer customer;
 
 }
