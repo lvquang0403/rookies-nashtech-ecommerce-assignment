@@ -1,5 +1,5 @@
-package com.example.ecommerce.entity;
-import com.example.ecommerce.dto.ResponseProductDTO;
+package entity;
+import com.example.ecommerce.dto.response.ResponseProductDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -10,7 +10,8 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @Entity
 @Builder
@@ -27,9 +28,14 @@ public class Product {
     @Column
     private BigDecimal price;
     @Column
+    private String image;
+    @Column
+    private String productDetails;
+    @Column
     private Date createdDate;
     @Column
     private Date updatedDate;
+    
 
 //    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "product")
 //    @EqualsAndHashCode.Exclude
@@ -48,10 +54,13 @@ public class Product {
     @JsonIgnore
     private Set<Rating> ratings;
 
-    public Product(String productName, String description, BigDecimal price, Date createdDate, Date updatedDate, Category category, Set<AttributeProduct> attributeProducts, Set<Rating> ratings) {
+
+    public Product(String productName, String description, BigDecimal price, String image, String productDetails, Date createdDate, Date updatedDate, Category category, Set<AttributeProduct> attributeProducts, Set<Rating> ratings) {
         this.productName = productName;
         this.description = description;
         this.price = price;
+        this.image = image;
+        this.productDetails = productDetails;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.category = category;

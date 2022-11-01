@@ -1,18 +1,14 @@
-package com.example.ecommerce.entity;
+package entity;
 
 import com.example.ecommerce.dto.RatingDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -24,25 +20,25 @@ public class Rating {
     @Column
     private String comment;
     @Column
-    private Integer start;
+    private Integer score;
     @Column
     private Date createDay;
 
 
     @ManyToOne
-    @JoinColumn(name = "ratingss")
+    @JoinColumn(name = "productId")
     private Product product;
 
 
     @ManyToOne
-    @JoinColumn(name = "ratings")
+    @JoinColumn(name = "customerId")
     private Customer customer;
 
-    public Rating(String comment, Product product, Date createDay,Integer start, Customer customer) {
+    public Rating(String comment, Product product, Date createDay,Integer score, Customer customer) {
         this.comment = comment;
         this.createDay = createDay;
         this.product = product;
-        this.start = start;
+        this.score = score;
         this.customer = customer;
     }
 
@@ -50,7 +46,8 @@ public class Rating {
         return new RatingDTO(
                 rating.getCustomer().getUserName(),
                 rating.getComment(),
-                rating.getStart()
+                rating.getScore(),
+                rating.getProduct().getProductId()
         );
     }
 }

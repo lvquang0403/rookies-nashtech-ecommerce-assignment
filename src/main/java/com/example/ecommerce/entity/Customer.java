@@ -1,16 +1,16 @@
-package com.example.ecommerce.entity;
+package entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -35,9 +35,15 @@ public class Customer {
     private String userName;
     @Column
     private String password;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private Set<Role> roles;
     @OneToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "cartId")
     private Cart cart;
+    @OneToMany(mappedBy = "customer")
+    private Set<Rating> ratings;
+    @OneToMany(mappedBy = "customer")
+    private Set<Order> orders;
+
 }

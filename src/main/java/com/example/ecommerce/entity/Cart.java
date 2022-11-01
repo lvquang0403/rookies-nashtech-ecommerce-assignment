@@ -1,9 +1,7 @@
-package com.example.ecommerce.entity;
+package entity;
 
 import com.example.ecommerce.dto.response.CartDTO;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.sql.Date;

@@ -1,9 +1,6 @@
-package com.example.ecommerce.entity;
-import com.example.ecommerce.dto.AttributeProductDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package entity;
+import com.example.ecommerce.dto.response.AttributeProductDTO;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,7 +8,8 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Table(uniqueConstraints={
         @UniqueConstraint(columnNames = {"productId", "attributeId"})
 })

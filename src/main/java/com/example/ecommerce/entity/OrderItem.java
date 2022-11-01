@@ -1,4 +1,4 @@
-package com.example.ecommerce.entity;
+package entity;
 
 import lombok.*;
 

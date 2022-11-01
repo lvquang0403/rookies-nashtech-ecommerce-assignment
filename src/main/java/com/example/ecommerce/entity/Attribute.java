@@ -1,6 +1,5 @@
-package com.example.ecommerce.entity;
+package entity;
 
-import com.example.ecommerce.dto.AttributeDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +10,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Table
 public class Attribute {
     @Id
@@ -30,12 +30,4 @@ public class Attribute {
         this.description = description;
     }
 
-    public static AttributeDTO convertToDTO(Attribute attribute){
-        return new AttributeDTO(
-                attribute.getAttributeId(),
-                attribute.getAttributeName(),
-                null,
-                attribute.getDescription()
-        );
-    }
 }
