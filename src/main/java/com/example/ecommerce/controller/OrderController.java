@@ -36,7 +36,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderItemsByOrderId(orderId));
     }
 
-    @GetMapping("/getCustomerOrders")
+    @GetMapping(value = "/getCustomerOrders")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ListOrderDTO> getCustomerOrders(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,

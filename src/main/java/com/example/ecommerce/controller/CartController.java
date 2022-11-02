@@ -28,7 +28,7 @@ public class CartController {
         return ResponseEntity.ok(cartItemService.addToCart(item));
     }
 
-    @GetMapping("getCartItems")
+    @GetMapping(value = "getCartItems")
     ResponseEntity<ListCartItemDTO> getCartItems(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize)
