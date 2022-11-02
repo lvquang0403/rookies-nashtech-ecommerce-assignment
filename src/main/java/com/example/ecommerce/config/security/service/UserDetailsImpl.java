@@ -3,7 +3,6 @@ package com.example.ecommerce.config.security.service;
 import com.example.ecommerce.entity.Customer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
