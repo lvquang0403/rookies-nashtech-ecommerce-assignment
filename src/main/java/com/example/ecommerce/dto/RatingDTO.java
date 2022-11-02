@@ -1,4 +1,4 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.request;
 
 
 import lombok.AllArgsConstructor;
@@ -12,6 +12,5 @@ public class RatingDTO {
     private String userName;
     private String comment;
     private Integer score;
-    private Long productId;
 
 }
