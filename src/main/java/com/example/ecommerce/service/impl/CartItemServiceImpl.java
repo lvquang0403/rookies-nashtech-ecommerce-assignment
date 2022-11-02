@@ -6,12 +6,10 @@ import com.example.ecommerce.dto.response.CartDTO;
 import com.example.ecommerce.dto.request.ItemPostDTO;
 import com.example.ecommerce.dto.response.ItemViewDTO;
 import com.example.ecommerce.dto.response.ListCartItemDTO;
-import com.example.ecommerce.dto.response.PageResponse;
 import com.example.ecommerce.entity.*;
 import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.*;
 import com.example.ecommerce.service.CartItemService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,8 +55,7 @@ public class CartItemServiceImpl implements CartItemService {
                     .customer(foundCustomer)
                     .build()));
         }
-        Page<CartItem> items = cartItemRepository.findCartItemByCartCartId(pageable, foundCustomer.getCart().getCartId());
-        List<ItemViewDTO> itemDTOs = items.getContent()
+        List<ItemViewDTO> items = cartItemRepository.findCartItemByCartCartId(pageable, foundCustomer.getCart().getCartId())
                 .stream()
                 .map(cartItem -> {
                     Optional<Image> image = imageRepository.findByColorIgnoreCaseAndProductProductId(
@@ -76,8 +74,8 @@ public class CartItemServiceImpl implements CartItemService {
                             cartItem.getTotalPrice()
                     );
                 }).toList();
-        PageResponse pageResponse = new PageResponse(pageSize, pageNumber, items.getTotalPages());
-        return new ListCartItemDTO(pageResponse, itemDTOs);
+
+        return new ListCartItemDTO(pageNumber, pageSize, items);
     }
 
     @Override
@@ -91,16 +89,13 @@ public class CartItemServiceImpl implements CartItemService {
         Date currentDay = Date.valueOf(LocalDate.now());
         Cart cart = cartRepository.findByCustomerCustomerId(customerId)
                 .orElseGet(() -> {
-                    Customer foundCustomer = customerRepository.findById(customerId).orElse(null);
                     Cart newCart = cartRepository.save(Cart.builder()
                             .createdDate(currentDay)
-                            .customer(foundCustomer)
+                            .customer(customerRepository.findById(customerId).get())
                             .build());
-                    if (foundCustomer != null) {
-                        foundCustomer.setCart(newCart);
-                        return customerRepository.save(foundCustomer).getCart();
-                    }
-                    throw new NotFoundException("Customer is Not found");
+                    Optional<Customer> foundCustomer = customerRepository.findById(customerId);
+                    foundCustomer.ifPresent(customer -> customer.setCart(newCart));
+                    return customerRepository.save(foundCustomer.get()).getCart();
                 });
 
         CartItem foundCartItem = cartItemRepository.findByCartCartIdAndProductProductId(cart.getCartId(), itemDTO.getProductId())
