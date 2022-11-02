@@ -17,7 +17,7 @@ public class CartItem extends Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "cartId")
     private Cart cart;
 

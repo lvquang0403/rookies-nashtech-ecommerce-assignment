@@ -1,6 +1,6 @@
 package com.example.ecommerce.service;
 
-import com.example.ecommerce.dto.CartDTO;
+import com.example.ecommerce.dto.response.CartDTO;
 
 
 public interface CartService {
