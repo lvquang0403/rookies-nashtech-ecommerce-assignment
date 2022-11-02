@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         try {
-            return categoryRepository.save(new Category(categoryName));
+            return categoryRepository.save(Category.builder().categoryName(categoryName).build());
         }
         catch (Exception ex){
             log.error(ex.getMessage(),ex.getCause());

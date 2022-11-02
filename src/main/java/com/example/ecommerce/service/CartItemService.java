@@ -1,17 +1,17 @@
 package com.example.ecommerce.service;
 
 
-import com.example.ecommerce.dto.CartDTO;
-import com.example.ecommerce.dto.ItemPostDTO;
-import com.example.ecommerce.dto.ListCartItemDTO;
+import com.example.ecommerce.dto.request.CartItemPutDTO;
+import com.example.ecommerce.dto.response.CartDTO;
+import com.example.ecommerce.dto.request.ItemPostDTO;
+import com.example.ecommerce.dto.response.ListCartItemDTO;
 
 import java.util.List;
 
 public interface CartItemService {
-
-    ListCartItemDTO findByCustomerId(int pageNumber, int pageSize, Long customerId);
+    ListCartItemDTO findByCustomerId(int pageNumber, int pageSize);
     CartDTO addToCart(ItemPostDTO itemDTO);
-    List<ItemPostDTO> updateCartItemByCustomerId(Long customerId , List<ItemPostDTO> itemPostDTOS);
+    void updateCartItem(CartItemPutDTO itemPostDTO);
     void deleteById(Long id);
 
 }

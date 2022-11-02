@@ -21,7 +21,7 @@ public class Cart {
     @Column
     private Date createdDate;
 
-    @OneToMany(mappedBy = "cart",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL)
     private Set<CartItem> cartItems;
     @OneToOne
     @JoinColumn(name = "customerId")

@@ -1,5 +1,6 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.dto.request.CartItemPutDTO;
 import com.example.ecommerce.dto.response.CartDTO;
 import com.example.ecommerce.dto.request.ItemPostDTO;
 import com.example.ecommerce.dto.response.ListCartItemDTO;
@@ -35,16 +36,18 @@ public class CartController {
         return ResponseEntity.ok(cartItemService.findByCustomerId(pageNumber, pageSize));
     }
 
-    @PutMapping("updateCartItems/{customerId}")
+    @PutMapping("updateCartItems")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    ResponseEntity<List<ItemPostDTO>> updateCartItem(
-            @RequestBody @Valid List<ItemPostDTO> items){
-        return ResponseEntity.ok(cartItemService.updateCartItems(items));
+    ResponseEntity<?> updateCartItem(
+            @RequestBody @Valid CartItemPutDTO item){
+        cartItemService.updateCartItem(item);
+        return ResponseEntity.ok("Successfully");
     }
 
     @DeleteMapping("/{cartItemId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<?> deleteById(@PathVariable Long cartItemId){
+        cartItemService.deleteById(cartItemId);
         return ResponseEntity.ok("Successfully");
     }
 
