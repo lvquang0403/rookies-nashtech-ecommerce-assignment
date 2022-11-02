@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListCartItemDTO {
-    private int pageNumber;
-    private int PageSize;
+    private PageResponse pageResponse;
     private List<ItemViewDTO> items;
 }

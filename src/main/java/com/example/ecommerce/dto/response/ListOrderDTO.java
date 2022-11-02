@@ -1,12 +1,15 @@
 package com.example.ecommerce.dto.response;
 
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Setter
+@Getter
 public class ListOrderDTO {
-    private int pageNumber;
-    private int pageSize;
+    private PageResponse pageResponse;
     private List<OrderDTO> orders;
 }
