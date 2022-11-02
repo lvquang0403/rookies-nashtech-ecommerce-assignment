@@ -1,4 +1,4 @@
-package entity;
+package com.example.ecommerce.entity;
 
 import lombok.*;
 
@@ -22,8 +22,8 @@ public class CartItem extends Item {
     private Cart cart;
 
 
-    public CartItem(Integer quantity, BigDecimal price, BigDecimal totalPrice, Product product, Cart cart) {
-        super(quantity, price, totalPrice, product);
+    public CartItem(Integer quantity, BigDecimal price, BigDecimal totalPrice,String color, Product product, Cart cart) {
+        super(quantity, price, totalPrice,color, product);
         this.cart = cart;
     }
 }

@@ -1,4 +1,4 @@
-package entity;
+package com.example.ecommerce.entity;
 import com.example.ecommerce.dto.response.AttributeProductDTO;
 import lombok.*;
 
@@ -20,7 +20,7 @@ public class AttributeProduct {
     @Column
     private String value;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "productId")
     private Product product;
 

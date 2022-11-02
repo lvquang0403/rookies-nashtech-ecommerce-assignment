@@ -1,4 +1,4 @@
-package entity;
+package com.example.ecommerce.entity;
 
 import lombok.*;
 
@@ -22,8 +22,8 @@ public class OrderItem extends Item{
     @JoinColumn(name = "orderId")
     private Order order;
 
-    public OrderItem(Integer quantity, BigDecimal price, BigDecimal totalPrice, Product product, Order newOrder) {
-        super(quantity, price, totalPrice, product);
+    public OrderItem(Integer quantity, BigDecimal price, BigDecimal totalPrice, String color, Product product, Order newOrder) {
+        super(quantity, price, totalPrice, color, product);
         this.order = newOrder;
     }
 }

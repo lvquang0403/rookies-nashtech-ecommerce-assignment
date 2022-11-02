@@ -1,4 +1,4 @@
-package entity;
+package com.example.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

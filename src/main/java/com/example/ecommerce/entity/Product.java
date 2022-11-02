@@ -1,4 +1,4 @@
-package entity;
+package com.example.ecommerce.entity;
 import com.example.ecommerce.dto.response.ResponseProductDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -28,8 +28,6 @@ public class Product {
     @Column
     private BigDecimal price;
     @Column
-    private String image;
-    @Column
     private String productDetails;
     @Column
     private Date createdDate;
@@ -47,23 +45,24 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Image> images;
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<AttributeProduct> attributeProducts;
-
     @OneToMany(mappedBy = "product")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Set<Rating> ratings;
 
-
-    public Product(String productName, String description, BigDecimal price, String image, String productDetails, Date createdDate, Date updatedDate, Category category, Set<AttributeProduct> attributeProducts, Set<Rating> ratings) {
+    public Product(String productName, String description, BigDecimal price, String productDetails, Date createdDate, Date updatedDate, Category category, Set<Image> images, Set<AttributeProduct> attributeProducts, Set<Rating> ratings) {
         this.productName = productName;
         this.description = description;
         this.price = price;
-        this.image = image;
         this.productDetails = productDetails;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.category = category;
+        this.images = images;
         this.attributeProducts = attributeProducts;
         this.ratings = ratings;
     }

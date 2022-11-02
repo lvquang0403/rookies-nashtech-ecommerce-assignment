@@ -1,4 +1,4 @@
-package entity;
+package com.example.ecommerce.entity;
 
 import lombok.*;
 
@@ -14,6 +14,7 @@ public abstract class Item {
     private Integer quantity;
     private BigDecimal price;
     private BigDecimal totalPrice;
+    private String color;
 
     @OneToOne
     @JoinColumn(name = "productId")

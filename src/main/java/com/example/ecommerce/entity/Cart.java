@@ -1,4 +1,4 @@
-package entity;
+package com.example.ecommerce.entity;
 
 import com.example.ecommerce.dto.response.CartDTO;
 import lombok.*;
