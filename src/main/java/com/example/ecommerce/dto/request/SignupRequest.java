@@ -1,13 +1,11 @@
 package com.example.ecommerce.dto.request;
-
-import com.example.ecommerce.entity.Role;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,18 +13,17 @@ public class SignupRequest {
     private String firstName;
     private String lastName;
     private String address;
-    @NotBlank
+    @NotBlank(message = "Phone cannot be empty")
     private String phone;
-    @NotBlank
+    @NotBlank(message = "email cannot be empty")
     @Size(max = 50)
     @Email
     private String email;
     private Date createdDate;
-    @NotBlank
+    @NotBlank(message = "userName cannot be empty")
     @Size(min = 3, max = 20)
     private String userName;
-    @NotBlank
+    @NotBlank(message = "Password cannot be empty")
     @Size(min = 6, max = 40)
     private String password;
-    private List<String> roles;
 }

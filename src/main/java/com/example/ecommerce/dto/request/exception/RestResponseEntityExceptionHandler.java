@@ -1,4 +1,4 @@
-package com.example.ecommerce.exception;
+package com.example.ecommerce.dto.request.exception;
 
 import com.example.ecommerce.dto.response.ResponseObject;
 import org.springframework.http.HttpHeaders;

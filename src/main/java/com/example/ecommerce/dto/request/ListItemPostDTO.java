@@ -1,4 +1,5 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.request;
+import com.example.ecommerce.dto.request.ItemPostDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

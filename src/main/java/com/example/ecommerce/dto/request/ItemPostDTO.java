@@ -1,4 +1,4 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class ItemPostDTO {
     private Long productId;
     private Long customerId;
+    private String color;
     private Integer quantity;
 }
