@@ -2,6 +2,8 @@ package com.example.ecommerce.entity;
 
 import com.example.ecommerce.dto.response.CartDTO;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -21,7 +23,8 @@ public class Cart {
     @Column
     private Date createdDate;
 
-    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<CartItem> cartItems;
     @OneToOne
     @JoinColumn(name = "customerId")

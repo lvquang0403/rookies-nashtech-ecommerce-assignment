@@ -1,9 +1,10 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.dto.RatingDTO;
-import com.example.ecommerce.response.ResponseObject;
+import com.example.ecommerce.dto.request.RatingPostDTO;
 import com.example.ecommerce.service.RatingService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,41 +18,36 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
-    @PostMapping("createRating")
-    @ResponseBody
-    ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO rating){
-        return ResponseEntity.ok(ratingService.createRating(rating));
+    @PostMapping("")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<RatingDTO> createRating(@RequestBody RatingPostDTO ratingDTO) {
+        return ResponseEntity.ok(ratingService.createRating(ratingDTO));
     }
 
-    @GetMapping("ratings")
-    @ResponseBody
+    @GetMapping("")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<List<RatingDTO>> getRatingsByProductId(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
-            @RequestParam(value = "productId", required = true) Long productId
+            @RequestParam(value = "productId") Long productId
     ) {
         return ResponseEntity.ok(ratingService.findAllByProductId(pageNumber, pageSize, productId));
     }
 
-    @GetMapping("/getById/{ratingId}")
-    @ResponseBody
-    ResponseEntity<RatingDTO> getRatingById(@PathVariable Long ratingId){
-        return ResponseEntity.ok(ratingService.findById(ratingId));
-    }
-
-    @PutMapping("updateRating/{ratingId}")
-    @ResponseBody
-    ResponseEntity<RatingDTO> updateRating(
+    @PutMapping("{ratingId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<?> updateRating(
             @PathVariable Long ratingId,
-            @RequestBody RatingDTO ratingDTO)
-    {
-        return ResponseEntity.ok(ratingService.updateById(ratingId, ratingDTO));
+            @RequestBody RatingPostDTO ratingDTO) {
+        ratingService.updateById(ratingId, ratingDTO);
+        return ResponseEntity.ok("Successfully");
     }
 
-    @DeleteMapping("deleteRating/{ratingId}")
-    ResponseEntity<ResponseObject> deleteRating(@PathVariable Long ratingId){
+    @DeleteMapping("{ratingId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<?> deleteRating(@PathVariable Long ratingId) {
         ratingService.deleteById(ratingId);
-        return ResponseEntity.ok(new ResponseObject("200", "successfully", null));
+        return ResponseEntity.ok("successfully");
     }
 
 }

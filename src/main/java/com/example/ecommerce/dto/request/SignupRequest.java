@@ -1,5 +1,5 @@
 package com.example.ecommerce.dto.request;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -8,7 +8,11 @@ import javax.validation.constraints.Size;
 import java.sql.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SignupRequest {
     private String firstName;
     private String lastName;

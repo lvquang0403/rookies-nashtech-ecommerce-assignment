@@ -1,14 +1,15 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.dto.ListProductDTO;
-import com.example.ecommerce.dto.ProductDTO;
-import com.example.ecommerce.dto.ProductPostDTO;
-import com.example.ecommerce.dto.ResponseProductDTO;
-import com.example.ecommerce.entity.Product;
-import com.example.ecommerce.response.ResponseObject;
+import com.example.ecommerce.dto.request.ProductPostDTO;
+import com.example.ecommerce.dto.request.ProductPutDTO;
+import com.example.ecommerce.dto.response.DetailProductDTO;
+import com.example.ecommerce.dto.response.ListProductViewDTO;
+import com.example.ecommerce.dto.response.ResponseProductDTO;
 import com.example.ecommerce.service.ProductService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 
 
 @RestController
@@ -19,25 +20,23 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-    @GetMapping("products")
-    @ResponseBody
-    ResponseEntity<ListProductDTO> getProducts(
+    @GetMapping("search")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<ListProductViewDTO> getProducts(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
-            @RequestParam(value = "productName",defaultValue = "", required = false) String productName,
-            @RequestParam(value = "categoryName", defaultValue = "", required = false) String categoryName
-
+            @RequestParam(value = "productName",defaultValue = "", required = false) String productName
     ) {
-        return ResponseEntity.ok(productService.findByConditions(pageNumber, pageSize, productName, categoryName));
+        return ResponseEntity.ok(productService.searchProductByProductName(pageNumber, pageSize, productName));
     }
-    @GetMapping("/getById/{productId}")
-    @ResponseBody
-    ResponseEntity<ProductDTO> getProductById(@PathVariable Long productId){
+    @GetMapping("/{productId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<DetailProductDTO> getProductById(@PathVariable Long productId){
         return ResponseEntity.ok(productService.findById(productId));
     }
     @GetMapping("/getByCategoryId/{categoryId}")
-    @ResponseBody
-    ResponseEntity<ListProductDTO> getProductsByCategoryId(
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<ListProductViewDTO> getProductsByCategoryId(
             @PathVariable Long categoryId,
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
@@ -45,24 +44,26 @@ public class ProductController {
         return ResponseEntity.ok(productService.findByCategoryId(pageNumber, pageSize, categoryId));
     }
 
-    @PostMapping("createProduct")
-    @ResponseBody
-    ResponseEntity<ResponseProductDTO> createProduct(@RequestBody ProductDTO productDTO){
+    @PostMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<ResponseProductDTO> createProduct(@RequestBody ProductPostDTO productDTO){
         return ResponseEntity.ok(productService.createProduct(productDTO));
     }
 
-    @PutMapping("updateProduct/{productId}")
-    @ResponseBody
-    ResponseEntity<ResponseProductDTO   > updateProduct(
+    @PutMapping("{productId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<?> updateProduct(
             @PathVariable Long productId,
-            @RequestBody ProductDTO productDTO)
+            @RequestBody ProductPutDTO productDTO)
     {
-        return ResponseEntity.ok(productService.updatedProductById(productDTO,productId));
+        productService.updatedProductById(productDTO, productId);
+        return ResponseEntity.ok("successfully");
     }
 
-    @DeleteMapping("deleteProduct/{productId}")
-    ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long productId){
+    @DeleteMapping("{productId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<?> deleteProduct(@PathVariable Long productId){
         productService.deleteProductById(productId);
-        return ResponseEntity.ok(new ResponseObject("200", "successfully", null));
+        return ResponseEntity.ok("successfully");
     }
 }

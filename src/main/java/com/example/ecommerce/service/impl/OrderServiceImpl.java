@@ -16,9 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -26,12 +25,14 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ImageRepository imageRepository;
 
-    public OrderServiceImpl(CartItemRepository cartItemRepository, CartRepository cartRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository) {
+    public OrderServiceImpl(CartItemRepository cartItemRepository, CartRepository cartRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository, ImageRepository imageRepository) {
         this.cartItemRepository = cartItemRepository;
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
@@ -43,26 +44,26 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findByCustomerCustomerId(customerId)
                 .orElseThrow(() -> new NotFoundException("Customer not found"));
         List<CartItem> cartItems = cartItemRepository.findCartItemByCartCartId(cart.getCartId());
-        if(cartItems.isEmpty()){
+        if (cartItems.isEmpty()) {
             throw new BadRequestException("don't any product in Cart");
         }
         Order newOrder = orderRepository.save(Order.builder()
-                        .orderName(orderDTO.getOrderName())
-                        .shipAddress(orderDTO.getAddress())
-                        .orderState(0)
-                        .orderPhone(orderDTO.getOrderPhone())
-                        .totalPrice(orderDTO.getTotalPrice())
+                .orderName(orderDTO.getOrderName())
+                .shipAddress(orderDTO.getAddress())
+                .orderState(0)
+                .orderPhone(orderDTO.getOrderPhone())
+                .totalPrice(orderDTO.getTotalPrice())
                 .build());
-        Set<OrderItem> setCartItems = cartItems.stream()
-                .map(item -> new OrderItem(
-                        item.getQuantity(),
-                        item.getPrice(),
-                        item.getTotalPrice(),
-                        item.getProduct(),
-                        newOrder
-                )).collect(Collectors.toSet());
-        newOrder.setOrderItems(setCartItems);
-        cartRepository.deleteById(cart.getCartId());
+        for (CartItem item : cartItems) {
+            orderItemRepository.save(new OrderItem(
+                    item.getQuantity(),
+                    item.getPrice(),
+                    item.getTotalPrice(),
+                    item.getColor(),
+                    item.getProduct(),
+                    newOrder));
+        }
+        cartItemRepository.deleteAllByCartCartId(cart.getCartId());
         return OrderDTO.fromOrder(orderRepository.save(newOrder));
     }
 
@@ -70,14 +71,14 @@ public class OrderServiceImpl implements OrderService {
     public ListOrderDTO getOrders(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         List<Order> orders = orderRepository.findAll(pageable).getContent();
-        if(orders.isEmpty()){
+        if (orders.isEmpty()) {
             throw new NotFoundException("don't have any order");
         }
         List<OrderDTO> orderDTOS = orders.stream()
                 .map(OrderDTO::fromOrder)
                 .toList();
 
-        return  new ListOrderDTO(
+        return new ListOrderDTO(
                 pageNumber,
                 pageSize,
                 orderDTOS
@@ -90,14 +91,14 @@ public class OrderServiceImpl implements OrderService {
                 (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long customerId = userDetails.getCustomerId();
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        List<Order> orders = orderRepository.findByCustomerCustomerId(customerId,pageable).getContent();
-        if(orders.isEmpty()){
+        List<Order> orders = orderRepository.findByCustomerCustomerId(customerId, pageable).getContent();
+        if (orders.isEmpty()) {
             throw new NotFoundException("don't have any order");
         }
         List<OrderDTO> orderDTOS = orders.stream()
                 .map(OrderDTO::fromOrder)
                 .toList();
-        return  new ListOrderDTO(
+        return new ListOrderDTO(
                 pageNumber,
                 pageSize,
                 orderDTOS
@@ -106,20 +107,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<ItemViewDTO> getOrderItemsByOrderId(Long orderId) {
-        if(orderRepository.findById(orderId).isEmpty()) {
+        if (orderRepository.findById(orderId).isEmpty()) {
             throw new NotFoundException(String.format("Order with id %s is not found", orderId));
         }
         List<OrderItem> orderItems = orderItemRepository.findByOrderOrderId(orderId);
-
-        return orderItems.stream()
-                .map(orderItem -> new ItemViewDTO(
-                        orderItem.getOrderItemId(),
-                        orderItem.getProduct().getProductName(),
-                        orderItem.getPrice(),
-                        orderItem.getQuantity(),
-                        orderItem.getTotalPrice()
-                )).toList();
-
+        List<ItemViewDTO> itemViewDTOS = new ArrayList<>();
+        for (OrderItem item : orderItems) {
+            Image image = imageRepository.findByColorIgnoreCaseAndProductProductId(item.getColor(), item.getProduct().getProductId())
+                    .orElse(null);
+            assert image != null;
+            itemViewDTOS.add(new ItemViewDTO(
+                    item.getOrderItemId(),
+                    image.getUrl(),
+                    item.getProduct().getProductName(),
+                    item.getPrice(),
+                    item.getQuantity(),
+                    item.getTotalPrice()));
+        }
+        return itemViewDTOS;
     }
 
     @Override

@@ -13,8 +13,9 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductPostDTO {
     @NotBlank(message = "ProductName cannot be empty")
     private String productName;

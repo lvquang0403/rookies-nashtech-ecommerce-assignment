@@ -41,13 +41,4 @@ public class Rating {
         this.score = score;
         this.customer = customer;
     }
-
-    public static RatingDTO convertToDTO(Rating rating){
-        return new RatingDTO(
-                rating.getCustomer().getUserName(),
-                rating.getComment(),
-                rating.getScore(),
-                rating.getProduct().getProductId()
-        );
-    }
 }

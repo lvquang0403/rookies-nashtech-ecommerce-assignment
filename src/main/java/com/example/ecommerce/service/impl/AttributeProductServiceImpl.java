@@ -1,11 +1,10 @@
 package com.example.ecommerce.service.impl;
-
-import com.example.ecommerce.dto.AttributeDTO;
-import com.example.ecommerce.dto.AttributeProductDTO;
+import com.example.ecommerce.dto.request.AttributeDTO;
+import com.example.ecommerce.exception.NotFoundException;
+import com.example.ecommerce.dto.response.AttributeProductDTO;
 import com.example.ecommerce.entity.Attribute;
 import com.example.ecommerce.entity.AttributeProduct;
 import com.example.ecommerce.entity.Product;
-import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.AttributeProductRepository;
 import com.example.ecommerce.repository.AttributeRepository;
 import com.example.ecommerce.repository.ProductRepository;
@@ -68,6 +67,10 @@ public class AttributeProductServiceImpl implements AttributeProductService {
 
     @Override
     public void deleteById(Long attributeProductId) {
-
+        AttributeProduct foundAttributeProduct = attributeProductRepository.findById(attributeProductId)
+                .orElseThrow( () ->
+                        new NotFoundException(String.format("Not Found Attribute Product with id %s ",attributeProductId))
+                );
+        attributeProductRepository.delete(foundAttributeProduct);
     }
 }

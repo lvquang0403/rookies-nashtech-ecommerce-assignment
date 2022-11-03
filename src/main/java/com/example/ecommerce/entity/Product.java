@@ -43,7 +43,7 @@ public class Product {
     @JoinColumn(name = "categoryId")
     private Category category;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Image> images;
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)

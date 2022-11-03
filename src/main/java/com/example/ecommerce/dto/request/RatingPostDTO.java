@@ -1,14 +1,14 @@
 package com.example.ecommerce.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.*;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class RatingPostDTO {
     @NotBlank(message = "comment cannot be empty")
     private String comment;

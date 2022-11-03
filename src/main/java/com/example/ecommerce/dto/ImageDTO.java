@@ -1,15 +1,13 @@
 package com.example.ecommerce.dto;
 
 import com.example.ecommerce.entity.Image;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ImageDTO {
     private String color;
     private String url;

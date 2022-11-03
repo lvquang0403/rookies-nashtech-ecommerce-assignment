@@ -1,17 +1,13 @@
 package com.example.ecommerce.service.impl;
 import com.example.ecommerce.dto.RatingDTO;
 import com.example.ecommerce.entity.Product;
-import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.service.RatingService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class RatingRepositoryAndServiceTest {
@@ -36,12 +32,7 @@ public class RatingRepositoryAndServiceTest {
                 .description("new 100%")
                 .price(BigDecimal.valueOf(1200))
                 .build());
-        ratingService.createRating(new RatingDTO("Quang","good", 2L));
     }
 
-    @Test
-    void createProduct_ShouldReturnProductId_WhenInsertSuccessfully() throws Exception {
-        assertThrows(NotFoundException.class, () -> ratingService.findById(2L));
-    }
 
 }

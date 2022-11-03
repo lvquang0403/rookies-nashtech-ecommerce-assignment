@@ -1,8 +1,7 @@
 package com.example.ecommerce.dto.request;
 
 import com.example.ecommerce.validation.constant.Regex;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -11,6 +10,9 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderPostDTO {
     @NotBlank(message = "orderName cannot be empty")
     private String orderName;

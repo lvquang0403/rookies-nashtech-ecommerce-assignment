@@ -1,13 +1,12 @@
 package com.example.ecommerce.dto.request;
 
 import com.example.ecommerce.entity.AttributeProduct;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttributeDTO {
@@ -22,12 +21,13 @@ public class AttributeDTO {
         this.attributeName = attributeName;
     }
 
-    public static AttributeDTO fromAttribute(AttributeProduct attribute){
+    public static AttributeDTO fromAttributeProduct(AttributeProduct attribute){
         return new AttributeDTO(
                 attribute.getAttribute().getAttributeId(),
                 attribute.getAttribute().getAttributeName(),
                 attribute.getValue()
         );
     }
+
 
 }

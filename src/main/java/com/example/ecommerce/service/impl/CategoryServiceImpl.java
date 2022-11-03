@@ -1,4 +1,5 @@
 package com.example.ecommerce.service.impl;
+
 import com.example.ecommerce.entity.Category;
 import com.example.ecommerce.exception.DuplicateException;
 import com.example.ecommerce.exception.NotFoundException;
@@ -28,15 +29,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category createCategory(Category category) {
         String categoryName = category.getCategoryName();
-        if(categoryRepository.findByCategoryNameIgnoreCase(categoryName).isPresent()){
-            throw new DuplicateException(String.format("Category with name %s already exists",categoryName));
+        if (categoryRepository.findByCategoryNameIgnoreCase(categoryName).isPresent()) {
+            throw new DuplicateException(String.format("Category with name %s already exists", categoryName));
         }
 
         try {
             return categoryRepository.save(Category.builder().categoryName(categoryName).build());
-        }
-        catch (Exception ex){
-            log.error(ex.getMessage(),ex.getCause());
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex.getCause());
             return null;
         }
     }
@@ -53,19 +53,19 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(categoryId).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id %s is not found", categoryId)));
     }
+
     @Override
     public Category updateById(Long categoryId, Category category) {
         Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id %s is not found", categoryId)));
 
-        if(!category.getCategoryName().isEmpty()){
+        if (!category.getCategoryName().isEmpty()) {
             foundCategory.setCategoryName(category.getCategoryName());
         }
         try {
             return categoryRepository.save(foundCategory);
-        }
-        catch (Exception ex){
-            log.error(ex.getMessage(),ex.getCause());
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex.getCause());
             return null;
         }
     }
@@ -73,11 +73,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteById(Long categoryId) {
         Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(() ->
-                        new NotFoundException(String.format("Category with id %s is not found", categoryId)));
-        if(productRepository.countProductByCategoryId(categoryId) > 0){
-            throw new StillRelationException(String.format("Category with id %s still referent to another Product",categoryId));
-        }
-        else {
+                new NotFoundException(String.format("Category with id %s is not found", categoryId)));
+        if (productRepository.countProductByCategoryId(categoryId) > 0) {
+            throw new StillRelationException(String.format("Category with id %s still referent to another Product", categoryId));
+        } else {
             categoryRepository.deleteById(foundCategory.getCategoryId());
         }
     }

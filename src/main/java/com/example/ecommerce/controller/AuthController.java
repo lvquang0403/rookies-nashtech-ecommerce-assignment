@@ -7,7 +7,7 @@ import com.example.ecommerce.dto.request.LoginRequest;
 import com.example.ecommerce.dto.request.SignupRequest;
 import com.example.ecommerce.entity.Customer;
 import com.example.ecommerce.entity.Role;
-import com.example.ecommerce.dto.request.exception.NotFoundException;
+import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.CustomerRepository;
 import com.example.ecommerce.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,11 +71,11 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody @Valid SignupRequest signUpRequest) {
-        if (customerRepository.existsCustomerByUserName(signUpRequest.getUserName())) {
+        if (Boolean.TRUE.equals(customerRepository.existsCustomerByUserName(signUpRequest.getUserName()))) {
             return ResponseEntity.badRequest().body("User Name already exists");
         }
 
-        if (customerRepository.existsCustomerByEmail(signUpRequest.getEmail())) {
+        if (Boolean.TRUE.equals(customerRepository.existsCustomerByEmail(signUpRequest.getEmail()))) {
             return ResponseEntity.badRequest().body("Email is already in use!");
         }
 
@@ -93,15 +93,9 @@ public class AuthController {
         Set<Role> roles = new HashSet<>();
 
         roles.forEach(role -> {
-            if ("admin".equals(role)) {
-                Role adminRole = roleRepository.findByRoleName("ROLE_ADMIN")
-                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                roles.add(adminRole);
-            } else {
-                Role userRole = roleRepository.findByRoleName("ROLE_USER")
-                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                roles.add(userRole);
-            }
+            Role userRole = roleRepository.findByRoleName("ROLE_USER")
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
         });
 
         customer.setRoles(roles);

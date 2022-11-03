@@ -1,15 +1,15 @@
 package com.example.ecommerce.dto.response;
 
 import com.example.ecommerce.entity.Product;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.sql.Date;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResponseProductDTO {
     private Long productId;
     private String productName;

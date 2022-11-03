@@ -1,19 +1,20 @@
 package com.example.ecommerce.service.impl;
 
+import com.example.ecommerce.config.security.service.UserDetailsImpl;
 import com.example.ecommerce.dto.RatingDTO;
+import com.example.ecommerce.dto.request.RatingPostDTO;
 import com.example.ecommerce.entity.Customer;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.entity.Rating;
-import com.example.ecommerce.exception.BadRequestException;
 import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.CustomerRepository;
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.repository.RatingRepository;
 import com.example.ecommerce.service.RatingService;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -33,59 +34,32 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public RatingDTO createRating(RatingDTO ratingDTO) {
+    public RatingDTO createRating(RatingPostDTO ratingDTO) {
         Product foundProduct = productRepository.findById(ratingDTO.getProductId()).orElseThrow(
                 () -> new NotFoundException(String.format("Product with id : %d is not found",ratingDTO.getProductId()))
         );
-
-        Customer customer = customerRepository.findByUserName(ratingDTO.getUserName()).orElseThrow(
-                () -> new NotFoundException((String.format("Customer with userName : %s is not found",ratingDTO.getUserName())))
-        );
+        UserDetailsImpl userDetails =
+                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long customerId = userDetails.getCustomerId();
+        Customer foundCustomer = customerRepository.findById(customerId).orElse(null);
         Date currentDay = Date.valueOf(LocalDate.now());
-        ratingRepository.save(new Rating(
+        return RatingDTO.fromRating(ratingRepository.save(new Rating(
                 ratingDTO.getComment(),
                 foundProduct,
                 currentDay,
-                ratingDTO.getStart(),
-                customer));
-        return ratingDTO;
-    }
-
-    @Override
-    public RatingDTO findById(Long ratingId) {
-        Rating foundRating = ratingRepository.findById(ratingId).orElseThrow(
-                () -> new NotFoundException(String.format("Rating with id : %d is not found",ratingId))
-        );
-//        return new RatingDTO(
-//                foundRating.getCustomer().getUserName(),
-//                foundRating.getComment(),
-//                foundRating.getStart(),
-//                foundRating.getProduct().getProductId()
-//        );
-        return Rating.convertToDTO(foundRating);
+                ratingDTO.getScore(),
+                foundCustomer)));
     }
 
     @Override
     public List<RatingDTO> findAllByProductId(int pageNumber, int pageSize, Long productId) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createDay").descending());
         List<Rating> ratings = ratingRepository.findAllByProductId(pageable, productId).getContent();
-        return ratings.stream().map(rating -> new RatingDTO(
-                rating.getCustomer().getUserName(),
-                rating.getComment(),
-                rating.getStart(),
-                rating.getProduct().getProductId()
-                )
-        ).toList();
+        return ratings.stream().map(RatingDTO::fromRating).toList();
     }
 
     @Override
-    public RatingDTO updateById(Long ratingId, RatingDTO ratingDTO) {
-        if(ratingDTO.getUserName() != null){
-            throw new BadRequestException("cannot change userName field of Rating");
-        }
-        if(ratingDTO.getProductId() != null){
-            throw new BadRequestException("cannot change productId field of Rating");
-        }
+    public void updateById(Long ratingId, RatingPostDTO ratingDTO) {
         Rating rating = ratingRepository.findById(ratingId).orElseThrow(
                 () -> new NotFoundException(String.format("Rating with id : %d is not found",ratingId))
         );
@@ -93,16 +67,10 @@ public class RatingServiceImpl implements RatingService {
         if(!ratingDTO.getComment().isEmpty()){
             rating.setComment(ratingDTO.getComment());
         }
-        if(ratingDTO.getStart() != null){
-            rating.setStart(ratingDTO.getStart());
+        if(ratingDTO.getScore() != null){
+            rating.setScore(ratingDTO.getScore());
         }
         ratingRepository.save(rating);
-        return new RatingDTO(
-                rating.getCustomer().getUserName(),
-                rating.getComment(),
-                rating.getStart(),
-                rating.getProduct().getProductId()
-        );
     }
 
     @Override
@@ -113,14 +81,14 @@ public class RatingServiceImpl implements RatingService {
         ratingRepository.deleteById(rating.getRatingId());
     }
 
-    @Override
-    public RatingDTO findByProductIdAndUserName(Long productId, String userName) {
-        return Rating.convertToDTO(ratingRepository.findByProductIdAndUserName(productId, userName)
-                .orElseThrow(
-                        () -> new NotFoundException(
-                                String.format("Rating with productId %s and userName %s is not found", productId, userName)
-                        )
-                )
-        );
-    }
+//    @Override
+//    public RatingDTO findByProductIdAndUserName(Long productId, String userName) {
+//        return Rating.convertToDTO(ratingRepository.findByProductIdAndUserName(productId, userName)
+//                .orElseThrow(
+//                        () -> new NotFoundException(
+//                                String.format("Rating with productId %s and userName %s is not found", productId, userName)
+//                        )
+//                )
+//        );
+//    }
 }

@@ -1,6 +1,7 @@
 package com.example.ecommerce.service.impl;
 
-import com.example.ecommerce.dto.AttributeDTO;
+import com.example.ecommerce.dto.request.AttributeDTO;
+import com.example.ecommerce.dto.request.AttributePostDTO;
 import com.example.ecommerce.entity.Attribute;
 import com.example.ecommerce.exception.BadRequestException;
 import com.example.ecommerce.exception.DuplicateException;
@@ -34,11 +35,7 @@ public class AttributeServiceImpl implements AttributeService {
 
         List<AttributeDTO> attributeDTOS = attributeProductRepository.findAllByProductProductId(productId)
                 .stream()
-                .map(attributeProduct -> new AttributeDTO(
-                        attributeProduct.getAttribute().getAttributeName(),
-                        attributeProduct.getValue()
-                    )
-                ).toList();
+                .map(AttributeDTO::fromAttributeProduct).toList();
 
         if(attributeDTOS.isEmpty()){
             throw new BadRequestException(String.format("Product with id %d don't contain any attribute",productId));
@@ -47,41 +44,44 @@ public class AttributeServiceImpl implements AttributeService {
     }
 
     @Override
-    public AttributeDTO createAttribute(AttributeDTO attributeDTO) {
+    public AttributeDTO createAttribute(AttributePostDTO attributeDTO) {
         if(attributeRepository.findByAttributeNameIgnoreCase(attributeDTO.getAttributeName()).isPresent()){
             throw new DuplicateException(String.format("Attribute with name %s already exists",attributeDTO.getAttributeName()));
         }
 
-        return Attribute.convertToDTO(attributeRepository.save(new Attribute(
-                        attributeDTO.getAttributeName(),
-                        attributeDTO.getDescription()
-                        )
-                )
+        Attribute attribute = attributeRepository.save(new Attribute(
+                attributeDTO.getAttributeName(),
+                attributeDTO.getDescription()
+        ));
+
+        return new AttributeDTO(
+                attribute.getAttributeId(),
+                attribute.getAttributeName()
         );
     }
 
-    @Override
-    public AttributeDTO findById(Long attributeId) {
-        Attribute foundAttribute = attributeRepository.findById(attributeId).orElseThrow(
-                () -> new NotFoundException(String.format("Attribute with id : %d is not found",attributeId))
-        );
-        return Attribute.convertToDTO(foundAttribute);
-    }
+//    @Override
+//    public AttributeDTO findById(Long attributeId) {
+//        Attribute foundAttribute = attributeRepository.findById(attributeId).orElseThrow(
+//                () -> new NotFoundException(String.format("Attribute with id : %d is not found",attributeId))
+//        );
+//        return AttributeDTO.fromAttribute(foundAttribute)
+//    }
 
-    @Override
-    public AttributeDTO updateById(Long attributeId, AttributeDTO attributeDTO) {
-        Attribute foundAttribute = attributeRepository.findById(attributeId).orElseThrow(
-                () -> new NotFoundException(String.format("Attribute with id : %d is not found",attributeId))
-        );
-        if(!attributeDTO.getAttributeName().isEmpty()){
-            foundAttribute.setAttributeName(attributeDTO.getAttributeName());
-        }
-        if(!attributeDTO.getDescription().isEmpty()){
-            foundAttribute.setDescription((attributeDTO.getDescription()));
-        }
-
-        return Attribute.convertToDTO(attributeRepository.save(foundAttribute));
-    }
+//    @Override
+//    public AttributeDTO updateById(Long attributeId, AttributeDTO attributeDTO) {
+//        Attribute foundAttribute = attributeRepository.findById(attributeId).orElseThrow(
+//                () -> new NotFoundException(String.format("Attribute with id : %d is not found",attributeId))
+//        );
+//        if(!attributeDTO.getAttributeName().isEmpty()){
+//            foundAttribute.setAttributeName(attributeDTO.getAttributeName());
+//        }
+//        if(!attributeDTO.getDescription().isEmpty()){
+//            foundAttribute.setDescription((attributeDTO.getDescription()));
+//        }
+//
+//        return Attribute.convertToDTO(attributeRepository.save(foundAttribute));
+//    }
 
     @Override
     public void deleteById(Long attributeId) {

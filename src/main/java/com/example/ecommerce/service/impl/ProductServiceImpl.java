@@ -7,7 +7,7 @@ import com.example.ecommerce.dto.request.ProductPostDTO;
 import com.example.ecommerce.dto.request.ProductPutDTO;
 import com.example.ecommerce.dto.response.*;
 import com.example.ecommerce.entity.*;
-import com.example.ecommerce.dto.request.exception.NotFoundException;
+import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.*;
 import com.example.ecommerce.service.AttributeProductService;
 import com.example.ecommerce.service.AttributeService;
@@ -70,40 +70,70 @@ public class ProductServiceImpl implements ProductService {
                 .category(foundCategory)
                 .build();
         Product saveProduct = productRepository.save(newProduct);
-        productDTO.getImages()
-                .forEach(imageDTO -> {
-                    Optional<Image> foundImage = imageRepository.findByColorIgnoreCaseAndProductProductId(imageDTO.getColor(), saveProduct.getProductId());
-                    Image image;
-                    if (foundImage.isEmpty()) {
-                        image = imageRepository.save(Image.builder().color(imageDTO.getColor()).url(imageDTO.getUrl()).build());
-                    } else {
-                        image = foundImage.get();
-                    }
-                    image.setProduct(saveProduct);
-                    imageRepository.save(image);
-                });
+//        productDTO.getImages()
+//                .forEach(imageDTO -> {
+//                    Optional<Image> foundImage = imageRepository.findByColorIgnoreCaseAndProductProductId(imageDTO.getColor(), saveProduct.getProductId());
+//                    Image image;
+//                    if (foundImage.isEmpty()) {
+//                        image = imageRepository.save(Image.builder().color(imageDTO.getColor()).url(imageDTO.getUrl()).build());
+//                    } else {
+//                        image = foundImage.get();
+//                    }
+//                    image.setProduct(saveProduct);
+//                    imageRepository.save(image);
+//                });
+        for (ImageDTO imageDTO : productDTO.getImages()) {
+            Optional<Image> foundImage = imageRepository.findByColorIgnoreCaseAndProductProductId(imageDTO.getColor(), saveProduct.getProductId());
+            Image image;
+            if (foundImage.isEmpty()) {
+                image = imageRepository.save(Image.builder().color(imageDTO.getColor()).url(imageDTO.getUrl()).build());
+            } else {
+                image = foundImage.get();
+            }
+            image.setProduct(saveProduct);
+            imageRepository.save(image);
+        }
 
-        productDTO.getAttributes()
-                .forEach(attributeDTO -> {
-                    Optional<Attribute> foundAttribute = attributeRepository.findByAttributeNameIgnoreCase(attributeDTO.getAttributeName());
-                    Long attributeId;
-                    if (foundAttribute.isEmpty()) {
-                        attributeId = attributeService.createAttribute(
-                                new AttributePostDTO(attributeDTO.getAttributeName())
-                        ).getAttributeId();
-                    }
-                    else {
-                        attributeId = foundAttribute.get().getAttributeId();
-                    }
-                    attributeProductService.createAttributeProduct(
-                            new AttributeProductDTO(
-                                    attributeDTO.getValue(),
-                                    saveProduct.getProductId(),
-                                    attributeId
-                            )
-                        );
-                    }
-                );
+//        productDTO.getAttributes()
+//                .forEach(attributeDTO -> {
+//                            Optional<Attribute> foundAttribute = attributeRepository.findByAttributeNameIgnoreCase(attributeDTO.getAttributeName());
+//                            Long attributeId;
+//                            if (foundAttribute.isEmpty()) {
+//                                attributeId = attributeService.createAttribute(
+//                                        new AttributePostDTO(attributeDTO.getAttributeName())
+//                                ).getAttributeId();
+//                            } else {
+//                                attributeId = foundAttribute.get().getAttributeId();
+//                            }
+//                            attributeProductService.createAttributeProduct(
+//                                    new AttributeProductDTO(
+//                                            attributeDTO.getValue(),
+//                                            saveProduct.getProductId(),
+//                                            attributeId
+//                                    )
+//                            );
+//                        }
+//                );
+//
+        for(AttributeDTO attributeDTO : productDTO.getAttributes()){
+            Optional<Attribute> foundAttribute = attributeRepository.findByAttributeNameIgnoreCase(attributeDTO.getAttributeName());
+            Long attributeId;
+            if (foundAttribute.isEmpty()) {
+                attributeId = attributeService.createAttribute(
+                        new AttributePostDTO(attributeDTO.getAttributeName())
+                ).getAttributeId();
+            } else {
+                attributeId = foundAttribute.get().getAttributeId();
+            }
+            attributeProductService.createAttributeProduct(
+                    new AttributeProductDTO(
+                            attributeDTO.getValue(),
+                            saveProduct.getProductId(),
+                            attributeId
+                    )
+            );
+        }
+
         return Product.convertToResponseProductDTO(saveProduct);
     }
 
@@ -116,14 +146,14 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ListProductViewDTO SearchProduct(int pageNumber, int pageSize, String condition) {
+    public ListProductViewDTO searchProductByProductName(int pageNumber, int pageSize, String productName) {
         log.debug("Request to find Product by conditions  : %s");
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         List<Product> foundProducts;
-        if (condition.isEmpty()) {
+        if (productName.isEmpty()) {
             foundProducts = productRepository.findAll(pageable).getContent();
         } else {
-            foundProducts = productRepository.filterByConditions(pageable, condition).getContent();
+            foundProducts = productRepository.filterByConditions(pageable, productName).getContent();
         }
 
         List<ProductViewHomeDTO> listProducts = foundProducts.stream()
@@ -136,20 +166,19 @@ public class ProductServiceImpl implements ProductService {
                         product.getProductDetails(),
                         product.getCategory().getCategoryId()
                 )).toList();
-        return new ListProductViewDTO(pageNumber,pageSize, listProducts);
+        return new ListProductViewDTO(pageNumber, pageSize, listProducts);
     }
 
     @Override
     public DetailProductDTO findById(Long productId) {
         log.debug(String.format("Request to find Product by id : %s", productId.toString()));
-       if(productRepository.findById(productId).isEmpty())
-       {
-           throw new NotFoundException(String.format("Product with id : %s is not found", productId));
-       }
+        if (productRepository.findById(productId).isEmpty()) {
+            throw new NotFoundException(String.format("Product with id : %s is not found", productId));
+        }
         List<Image> images = imageRepository.findAllByProductProductId(productId);
         List<AttributeProduct> attributes = attributeProductRepository.findInfoAttributeWithoutImageByProductId(productId);
         List<AttributeDTO> listAttribute = attributes.stream()
-                .map(AttributeDTO::fromAttribute)
+                .map(AttributeDTO::fromAttributeProduct)
                 .toList();
 
         return new DetailProductDTO(
@@ -179,19 +208,18 @@ public class ProductServiceImpl implements ProductService {
         if (!productDTO.getAttributes().isEmpty()) {
             Set<AttributeProduct> attributeProducts = new HashSet<>();
             List<AttributeDTO> attributeDTOS = productDTO.getAttributes();
-            for(AttributeDTO attributeDTO : attributeDTOS){
+            for (AttributeDTO attributeDTO : attributeDTOS) {
                 Optional<Attribute> foundAttribute = attributeRepository.findByAttributeNameIgnoreCase(attributeDTO.getAttributeName());
-                if (foundAttribute.isPresent()){
+                if (foundAttribute.isPresent()) {
                     attributeProducts.add(AttributeProduct.builder()
-                                    .attribute(foundAttribute.get())
-                                    .product(foundProduct)
-                                    .value(attributeDTO.getValue())
-                                    .build());
-                }
-                else {
+                            .attribute(foundAttribute.get())
+                            .product(foundProduct)
+                            .value(attributeDTO.getValue())
+                            .build());
+                } else {
                     Attribute newAttribute = Attribute.builder()
-                                            .attributeName(attributeDTO.getAttributeName())
-                                            .build();
+                            .attributeName(attributeDTO.getAttributeName())
+                            .build();
                     attributeProducts.add(AttributeProduct.builder()
                             .attribute(attributeRepository.save(newAttribute))
                             .product(foundProduct)
@@ -212,11 +240,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ListProductViewDTO findByCategoryId(int pageNumber, int pageSize, Long categoryId) {
         log.debug("Request to find by categoryId Product (Paging)");
-        if(categoryRepository.findById(categoryId).isEmpty()){
-                throw  new NotFoundException(String.format("Category with id : %s is not found", categoryId));
+        if (categoryRepository.findById(categoryId).isEmpty()) {
+            throw new NotFoundException(String.format("Category with id : %s is not found", categoryId));
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        List<Product> foundProducts = productRepository.findByCategoryId(categoryId,pageable).getContent();
+        List<Product> foundProducts = productRepository.findByCategoryId(categoryId, pageable).getContent();
         List<ProductViewHomeDTO> listFoundProductDTO = foundProducts.stream()
                 .map(product -> new ProductViewHomeDTO(
                         product.getProductId(),

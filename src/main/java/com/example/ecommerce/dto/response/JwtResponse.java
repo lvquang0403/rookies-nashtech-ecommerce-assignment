@@ -1,12 +1,14 @@
 package com.example.ecommerce.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class JwtResponse {
     private String token;
     private String type = "Bearer";

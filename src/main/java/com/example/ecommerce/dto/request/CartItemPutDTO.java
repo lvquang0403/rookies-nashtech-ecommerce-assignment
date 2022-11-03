@@ -3,6 +3,7 @@ package com.example.ecommerce.dto.request;
 import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
