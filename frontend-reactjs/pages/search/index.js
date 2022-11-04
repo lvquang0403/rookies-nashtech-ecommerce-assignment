@@ -36,7 +36,7 @@ export default function Products() {
               { products && products.map(product => {
                 return (
                   <div key={product.productId} className="col">
-                    <ProductGridCard id={product.productId} title={product.productName} price={product.price} src={product.images[0].url} />
+                    <ProductGridCard id={product.productId} title={product.productName} price={product.price} src={product.images[0].url} categoryId={product.categoryId} />
                   </div>)
               })}
             </div>

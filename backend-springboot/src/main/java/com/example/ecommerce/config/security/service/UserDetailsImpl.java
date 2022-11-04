@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -31,7 +32,7 @@ public class UserDetailsImpl implements UserDetails {
     public static UserDetailsImpl build(Customer customer){
         List<SimpleGrantedAuthority> authorities = customer.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-                .toList();
+                .collect(Collectors.toList());
         return new UserDetailsImpl(
                 customer.getCustomerId(),
                 customer.getUserName(),

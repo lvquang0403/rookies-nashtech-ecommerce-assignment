@@ -14,6 +14,7 @@ import com.example.ecommerce.service.AttributeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AttributeServiceImpl implements AttributeService {
@@ -35,7 +36,7 @@ public class AttributeServiceImpl implements AttributeService {
 
         List<AttributeDTO> attributeDTOS = attributeProductRepository.findAllByProductProductId(productId)
                 .stream()
-                .map(AttributeDTO::fromAttributeProduct).toList();
+                .map(AttributeDTO::fromAttributeProduct).collect(Collectors.toList());
 
         if(attributeDTOS.isEmpty()){
             throw new BadRequestException(String.format("Product with id %d don't contain any attribute",productId));

@@ -22,16 +22,16 @@ function ProductDetail() {
 
   useEffect(() => {
     const fetchData = async () => {
- 
-    if (categoryId) {
-      await productService.getProductByCategoryId(categoryId, 0, 5)
-        .then(res => setProducts(res.data.products))
+
+      if (categoryId) {
+        await productService.getProductByCategoryId(categoryId, 0, 5)
+          .then(res => setProducts(res.data.products))
+      }
     }
-  }
-  fetchData();
+    fetchData();
   }, [categoryId])
 
-  useEffect(() => { 
+  useEffect(() => {
     const fetchData = async () => {
       if (id) {
         await productService.getDetaiProduct(id)
@@ -39,7 +39,7 @@ function ProductDetail() {
             setProduct(res.data)
             setImages(res.data.images)
             setAttributes(res.data.attributes)
-          })          
+          })
       }
     }
     fetchData();
@@ -85,7 +85,24 @@ function ProductDetail() {
               </div>
               <div className="row mt-3 d-none d-lg-block">
                 <div className="col-12 d-flex justify-content-center">
-                  { }
+                  {images.map((e) => {
+                    return (
+                      <div
+                        key={e}
+                        style={{ width: 60 }}
+                        className="me-2 ratio ratio-1x1"
+                      >
+                        <img
+                          className="rounded"
+                          src={e.url}
+                          width={60}
+                          height={60}
+                          alt="Product image."
+                          key={e}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -238,12 +255,12 @@ function ProductDetail() {
                 <h5 className="my-auto fw-semibold">Related products</h5>
               </div>
               <div className="card-body">
-                { products && products.map(product => <ProductSimpleHorizontal 
-                                          key={product.productId}
-                                          price = {product.price}
-                                          src = {product.images[0].url}
-                                          productName = {product.productName}
-                                          id={product.productId}/>)}
+                {products && products.map(product => <ProductSimpleHorizontal
+                  key={product.productId}
+                  price={product.price}
+                  src={product.images[0].url}
+                  productName={product.productName}
+                  id={product.productId} />)}
                 {/* <ProductSimpleHorizontal id={1} /> */}
               </div>
             </div>

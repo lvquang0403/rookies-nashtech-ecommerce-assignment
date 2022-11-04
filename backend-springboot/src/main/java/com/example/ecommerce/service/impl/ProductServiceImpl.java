@@ -148,12 +148,12 @@ public class ProductServiceImpl implements ProductService {
                             product.getProductName(),
                             product.getDescription(),
                             product.getPrice(),
-                            product.getImages().stream().map(ImageDTO::fromImage).toList(),
+                            product.getImages().stream().map(ImageDTO::fromImage).collect(toList()),
                             product.getProductDetails(),
                             product.getCategory().getCategoryId(),
                             numberRating
                     );
-                }).toList();
+                }).collect(toList());
         PageResponse pageResponse = new PageResponse(pageSize, pageNumber, productPage.getTotalPages());
         return new ListProductViewDTO(pageResponse ,listProducts);
     }
@@ -167,7 +167,7 @@ public class ProductServiceImpl implements ProductService {
         List<AttributeProduct> attributes = attributeProductRepository.findInfoAttributeWithoutImageByProductId(productId);
         List<AttributeDTO> listAttribute = attributes.stream()
                 .map(AttributeDTO::fromAttributeProduct)
-                .toList();
+                .collect(toList());
         Double avgRating = ratingRepository.avgRatingByProductId(foundProduct.getProductId());
         int numberRating = 0;
         if(avgRating != null){
@@ -176,7 +176,7 @@ public class ProductServiceImpl implements ProductService {
         return new DetailProductDTO(
                 productId,
                 foundProduct.getProductName(),
-                images.stream().map(ImageDTO::fromImage).toList(),
+                images.stream().map(ImageDTO::fromImage).collect(toList()),
                 listAttribute,
                 foundProduct.getPrice(),
                 numberRating
@@ -253,12 +253,12 @@ public class ProductServiceImpl implements ProductService {
                             product.getProductName(),
                             product.getDescription(),
                             product.getPrice(),
-                            product.getImages().stream().map(ImageDTO::fromImage).toList(),
+                            product.getImages().stream().map(ImageDTO::fromImage).collect(toList()),
                             product.getProductDetails(),
                             product.getCategory().getCategoryId(),
                             numberRating
                     );
-                }).toList();
+                }).collect(toList());
         PageResponse pageResponse = new PageResponse(pageSize, pageNumber, productPage.getTotalPages());
         return new ListProductViewDTO(pageResponse,listFoundProductDTO);
     }

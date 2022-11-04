@@ -15,7 +15,7 @@ function ProductSimpleHorizontal({ id, price, productName, src, categoryId }) {
         />
       </div>
       <div className="d-flex flex-column flex-grow-1 ms-3">
-        <Link href={`product/${id}`}>
+        <Link href={`/product/${id}`}>
           <a className="text-dark text-decoration-none">{productName}</a>
         </Link>
         <h6 className="mb-0 fw-semibold">{new Intl.NumberFormat('de-DE').format(price)} VND</h6>

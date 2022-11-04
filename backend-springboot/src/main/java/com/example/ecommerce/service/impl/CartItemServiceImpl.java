@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartItemServiceImpl implements CartItemService {
@@ -73,7 +74,7 @@ public class CartItemServiceImpl implements CartItemService {
                             cartItem.getQuantity(),
                             cartItem.getTotalPrice()
                     );
-                }).toList();
+                }).collect(Collectors.toList());
 
         return new ListCartItemDTO(pageNumber, pageSize, items);
     }

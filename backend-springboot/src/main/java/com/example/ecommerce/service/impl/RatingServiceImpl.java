@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RatingServiceImpl implements RatingService {
@@ -55,7 +56,7 @@ public class RatingServiceImpl implements RatingService {
     public List<RatingDTO> findAllByProductId(int pageNumber, int pageSize, Long productId) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createDay").descending());
         List<Rating> ratings = ratingRepository.findAllByProductId(pageable, productId).getContent();
-        return ratings.stream().map(RatingDTO::fromRating).toList();
+        return ratings.stream().map(RatingDTO::fromRating).collect(Collectors.toList());
     }
 
     @Override

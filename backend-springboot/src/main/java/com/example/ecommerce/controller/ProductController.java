@@ -34,11 +34,11 @@ public class ProductController {
     ResponseEntity<DetailProductDTO> getProductById(@PathVariable Long productId){
         return ResponseEntity.ok(productService.findById(productId));
     }
-    @GetMapping("/getByCategoryId/{categoryId}")
+    @GetMapping()
     ResponseEntity<ListProductViewDTO> getProductsByCategoryId(
-            @PathVariable Long categoryId,
             @RequestParam(value = "pageNumber", defaultValue = "0")  int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "categoryId") Long categoryId
     ) {
         return ResponseEntity.ok(productService.findByCategoryId(pageNumber, pageSize, categoryId));
     }

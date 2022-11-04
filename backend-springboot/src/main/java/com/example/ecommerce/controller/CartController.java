@@ -23,13 +23,13 @@ public class CartController {
     }
 
 
-    @PostMapping("addToCart")
+    @PostMapping()
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<CartDTO> addProductToCart(@RequestBody @Valid ItemPostDTO item){
         return ResponseEntity.ok(cartItemService.addToCart(item));
     }
 
-    @GetMapping("getCartItems")
+    @GetMapping("cart-items")
     ResponseEntity<ListCartItemDTO> getCartItems(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize)
@@ -37,7 +37,7 @@ public class CartController {
         return ResponseEntity.ok(cartItemService.findByCustomerId(pageNumber, pageSize));
     }
 
-    @PutMapping("updateCartItems")
+    @PutMapping("cart-item")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<?> updateCartItem(
             @RequestBody @Valid CartItemPutDTO item){
