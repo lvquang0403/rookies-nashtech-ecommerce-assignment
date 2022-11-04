@@ -28,6 +28,8 @@ function ExploreProducts() {
       getProductByCategoryId(id)
     }
   }, [id, page]);
+
+  console.log(id)
   return (
     <div className="vstack">
       <div className="bg-secondary">
@@ -61,7 +63,7 @@ function ExploreProducts() {
               {products.map(product => {
                 return (
                   <div key={product.productId} className="col">
-                    <ProductGridCard id={product.productId} title={product.productName} price={product.price} src={product.images[0].url} />
+                    <ProductGridCard id={product.productId} title={product.productName} price={product.price} src={product.images[0].url} categoryId={id}/>
                   </div>)
               })}
             </div>

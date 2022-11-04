@@ -39,20 +39,18 @@ function CartItemRow() {
             <span className="h5">
               <Link href="/product/1">
                 <a className="link-dark text-decoration-none">
-                  Product name here
+                  {/* {productName} */}
                 </a>
               </Link>
             </span>
-            <small className="d-flex text-muted" style={{ fontSize: 12 }}>
-              <span>Medium</span>
-              ,&nbsp;
-              <span>White</span>
-            </small>
+            {/* <small className="d-flex text-muted" style={{ fontSize: 12 }}>
+              <span>{s}</span>
+            </small> */}
           </div>
         </div>
       </td>
       <td>
-        <h6 className="mb-0">10000Ks</h6>
+        <h6 className="mb-0"></h6>
       </td>
       <td>
         <div className="d-flex">

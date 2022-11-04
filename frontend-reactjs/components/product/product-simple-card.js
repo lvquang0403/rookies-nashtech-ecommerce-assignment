@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ProductRating from "../product-rating";
 
-function ProductSimpleCard({ id, title, src, price, avgRating }) {
+function ProductSimpleCard({ id, title, src, price, avgRating, categoryId }) {
   return (
     <div className="card h-100 border-0 shadow-sm">
       <div className="ratio ratio-1x1">
@@ -13,7 +13,10 @@ function ProductSimpleCard({ id, title, src, price, avgRating }) {
         />
       </div>
       <div className="card-body">
-        <Link href="/product/1">
+        <Link href={{
+          pathname: `/product/${id}`,
+          query: { categoryId: categoryId },
+        }}>
           <a className="mb-1 text-dark text-decoration-none stretched-link">
             {title}
           </a>

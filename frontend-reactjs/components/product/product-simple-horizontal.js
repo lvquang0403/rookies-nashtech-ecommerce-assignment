@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
-function ProductSimpleHorizontal({ id }) {
+function ProductSimpleHorizontal({ id, price, productName, src, categoryId }) {
   return (
     <div className="d-flex py-2">
       <div className="flex-shink-0" style={{ height: 80 }}>
         <img
           className="rounded"
-          src={``}
+          src={src}
           width={80}
           height={80}
           alt="Product image."
@@ -15,10 +15,10 @@ function ProductSimpleHorizontal({ id }) {
         />
       </div>
       <div className="d-flex flex-column flex-grow-1 ms-3">
-        <Link href="/product/1">
-          <a className="text-dark text-decoration-none">Product name here</a>
+        <Link href={`product/${id}`}>
+          <a className="text-dark text-decoration-none">{productName}</a>
         </Link>
-        <h6 className="mb-0 fw-semibold">10000Ks</h6>
+        <h6 className="mb-0 fw-semibold">{new Intl.NumberFormat('de-DE').format(price)} VND</h6>
         <div className="mt-auto">
           <button className="btn btn-sm btn-secondary text-primary rounded-3">
             <FontAwesomeIcon icon={("fas", "cart-plus")} />

@@ -162,7 +162,7 @@ export default function Home() {
                   return (
                     <div className="col" key={product.productId}>
                       <ProductSimpleCard id={product.productId} title={product.productName}
-                        src={product.images[0].url} price={product.price} avgRating={product.numberRating} />
+                        src={product.images[0].url} price={product.price} avgRating={product.numberRating} categoryId={category.categoryId} />
                     </div>
                   );
                 })}

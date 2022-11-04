@@ -4,28 +4,47 @@ import { useRouter } from 'next/router'
 import ProductSimpleHorizontal from "../../components/product/product-simple-horizontal";
 import { useState, useEffect } from "react";
 import productService from "../../services/product.service";
+import React from "react";
 
 function ProductDetail() {
   const imagess = [1, 2, 3]
-  const[images, setImages] = useState([])
+  const [images, setImages] = useState([])
   const [color, setColor] = useState(0)
   const router = useRouter()
   const [product, setProduct] = useState({})
+  const [products, setProducts] = useState([])
+  const [attributes, setAttributes] = useState()
   const {
-    id
-  } = router.query
-  console.log(id)
+    query: { id, categoryId },
+
+  } = router
+
 
   useEffect(() => {
-    if (id) {
-      productService.getDetaiProduct(id)
-        .then(res => {setProduct(res.data)
-          setImages(res.data.images)
-        })
+    const fetchData = async () => {
+ 
+    if (categoryId) {
+      await productService.getProductByCategoryId(categoryId, 0, 5)
+        .then(res => setProducts(res.data.products))
     }
-  }, [id])
-  console.log(product)
-  console.log(images)
+  }
+  fetchData();
+  }, [categoryId])
+
+  useEffect(() => { 
+    const fetchData = async () => {
+      if (id) {
+        await productService.getDetaiProduct(id)
+          .then(res => {
+            setProduct(res.data)
+            setImages(res.data.images)
+            setAttributes(res.data.attributes)
+          })          
+      }
+    }
+    fetchData();
+  }, [id]);
+  console.log(products)
   return (
     <div className="vstack">
       <div className="bg-secondary">
@@ -66,24 +85,7 @@ function ProductDetail() {
               </div>
               <div className="row mt-3 d-none d-lg-block">
                 <div className="col-12 d-flex justify-content-center">
-                  {images.map((img, index) => {
-                    return (
-                      <div
-                        key={index}
-                        style={{ width: 60 }}
-                        className="me-2 ratio ratio-1x1"
-                      >
-                        <img
-                          className="rounded"
-                          src={img.url}
-                          width={60}
-                          height={60}
-                          alt="Product image."
-                          key={index}
-                        />
-                      </div>
-                    );
-                  })}
+                  { }
                 </div>
               </div>
             </div>
@@ -92,16 +94,6 @@ function ProductDetail() {
               <div className="d-flex">
                 <div className="d-inline h2 mb-0 fw-semibold me-3">
                   {product.productName}
-                </div>
-                <div className="ms-auto">
-                  <button
-                    className="btn btn-outline-secondary text-primary border"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    title="Add to wish list"
-                  >
-                    <FontAwesomeIcon icon={["far", "heart"]} size="lg" />
-                  </button>
                 </div>
               </div>
 
@@ -120,12 +112,21 @@ function ProductDetail() {
                   visual mockups.
                 </p>
                 <dl className="row mb-0">
-                  <dt className="col-sm-3 fw-semibold">Code#</dt>
-                  <dd className="col-sm-9">10001</dd>
-                  <dt className="col-sm-3 fw-semibold">Category</dt>
-                  <dd className="col-sm-9">Electronics</dd>
-                  <dt className="col-sm-3 fw-semibold">Delivery</dt>
-                  <dd className="col-sm-9">Yangon, Mandalay</dd>
+                  {attributes && (
+                    <div>
+                      {attributes.map(at => {
+                        return (
+                          <React.Fragment key={at.attributeId}>
+                            <dt className="col-sm-3 fw-semibold">{at.attributeName}</dt>
+                            <dd className="col-sm-9">{at.value}</dd>
+                          </React.Fragment>)
+
+                      })
+                      }
+                    </div>
+                  )
+
+                  }
                 </dl>
                 <hr className="text-muted" />
                 <dl className="row gy-2 mb-4">
@@ -133,7 +134,7 @@ function ProductDetail() {
                   <dd className="col-12">
                     <div className="hstack gap-2">
                       <div className="form-check" onChange={e => setColor(e.target.value)}>
-                        {images.map((img, index) => {  
+                        {images.map((img, index) => {
                           return (
                             <div key={index}>
                               <input
@@ -147,63 +148,13 @@ function ProductDetail() {
                                 className="form-check-label fw-medium"
                                 htmlFor="c1"
                               >
-                                {img.color}  
+                                {img.color}
                               </label>
 
                             </div>
                           )
 
                         })}
-                      </div>
-                    </div>
-                  </dd>
-
-                  <dt className="col-12 fw-semibold">Size</dt>
-                  <dd className="col-12">
-                    <div className="hstack gap-2">
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          className="form-check-input"
-                          name="size1"
-                          id="s1"
-                          checked
-                          onChange={() => { }}
-                        />
-                        <label
-                          className="form-check-label fw-medium"
-                          htmlFor="s1"
-                        >
-                          Small
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          className="form-check-input"
-                          name="size2"
-                          id="s2"
-                        />
-                        <label
-                          className="form-check-label fw-medium"
-                          htmlFor="s2"
-                        >
-                          Medium
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          className="form-check-input"
-                          name="size3"
-                          id="s3"
-                        />
-                        <label
-                          className="form-check-label fw-medium"
-                          htmlFor="c3"
-                        >
-                          Large
-                        </label>
                       </div>
                     </div>
                   </dd>
@@ -287,11 +238,13 @@ function ProductDetail() {
                 <h5 className="my-auto fw-semibold">Related products</h5>
               </div>
               <div className="card-body">
-                <ProductSimpleHorizontal id={1} />
-                <ProductSimpleHorizontal id={2} />
-                <ProductSimpleHorizontal id={3} />
-                <ProductSimpleHorizontal id={4} />
-                <ProductSimpleHorizontal id={5} />
+                { products && products.map(product => <ProductSimpleHorizontal 
+                                          key={product.productId}
+                                          price = {product.price}
+                                          src = {product.images[0].url}
+                                          productName = {product.productName}
+                                          id={product.productId}/>)}
+                {/* <ProductSimpleHorizontal id={1} /> */}
               </div>
             </div>
           </div>

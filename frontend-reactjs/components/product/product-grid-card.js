@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
-function ProductGridCard({ id, title, price, src }) {
+function ProductGridCard({ id, title, price, src, categoryId }) {
   return (
     <div className="card h-100 border-0 shadow-sm">
-      <Link href={`/product/${id}`}>
+      <Link href={`/product/${id}?categoryId=${categoryId}`}>
         <a>
           <div className="ratio ratio-1x1">
             <img
@@ -18,7 +18,7 @@ function ProductGridCard({ id, title, price, src }) {
       </Link>
       <div className="card-body">
         <div className="vstack gap-2">
-          <Link href={`/product/${id}`}>
+          <Link href={`/product/${id}/?categoryId${categoryId}`}>
             <a className="text-dark text-decoration-none">{title}</a>
           </Link>
 
