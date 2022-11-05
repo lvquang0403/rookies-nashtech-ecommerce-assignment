@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class    LoginRequest {
+public class LoginRequest {
     @NotBlank(message = "userName cannot be empty")
     @Size(min = 2, max = 30, message = "number character of userName must have from 2 to 30")
     private String username;

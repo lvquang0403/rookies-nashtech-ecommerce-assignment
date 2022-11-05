@@ -28,9 +28,6 @@ export default function Home() {
 
     });
   }, []);
-  console.log(products)
-  console.log(products.get(1));
-  console.log(categorys)
   return (
     <div>
       <div className="container py-3">
@@ -161,8 +158,7 @@ export default function Home() {
                 {products.get(category.categoryId) && products.get(category.categoryId).map(product => {
                   return (
                     <div className="col" key={product.productId}>
-                      <ProductSimpleCard id={product.productId} title={product.productName}
-                        src={product.images[0].url} price={product.price} avgRating={product.numberRating} categoryId={category.categoryId} />
+                      <ProductSimpleCard product={product} categoryId={category.categoryId} />
                     </div>
                   );
                 })}

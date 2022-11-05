@@ -13,12 +13,12 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query(value = "select * from " +
-            "(select distinct on (p.product_name) p.* " +
-            "from product p) as sub " +
-            "ORDER BY sub.product_id ",
-            countQuery = "select count(*) from product p",
-            nativeQuery = true)
+//    @Query(value = "select * from " +
+//            "(select distinct on (p.product_name) p.* " +
+//            "from product p) as sub " +
+//            "ORDER BY sub.product_id ",
+//            countQuery = "select count(*) from product p",
+//            nativeQuery = true)
     Page<Product> findAll(Pageable pageable);
     List<Product> findAllByOrderByProductNameAsc();
     Optional<Product> findByProductNameIgnoreCase(String productName);
@@ -26,13 +26,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "inner join p.category c " +
             "WHERE c.categoryId = ?1")
     Integer countProductByCategoryId(Long categoryId);
-    @Query(value = "select * from " +
-            "(select distinct on (p.product_name) p.* " +
-            "from product p where p.category_id = ?1) as sub  " +
-            "ORDER BY sub.product_id ",
-            countQuery = "select count(*) from product p",
-            nativeQuery = true)
-    Page<Product> findByCategoryId(Long categoryId,Pageable pageable);
+//    @Query(value = "select * from " +
+//            "(select distinct on (p.product_name) p.* " +
+//            "from product p where p.category_id = ?1) as sub  " +
+//            "ORDER BY sub.product_id ",
+//            countQuery = "select count(*) from product p",
+//            nativeQuery = true)
+    Page<Product> findByCategoryCategoryId(Long categoryId,Pageable pageable);
     @Query("SELECT p FROM Product p WHERE p.productName LIKE CONCAT('%',?1,'%')")
     Page<Product> filterByProductName(Pageable pageable, String productName);
     @Query(value = "SELECT p FROM Product p " +

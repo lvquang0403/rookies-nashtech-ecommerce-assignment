@@ -6,7 +6,7 @@ class ProductService {
 
     getProductByCategoryId(categoryId, pageNumber, pageSize) {
         return axios
-        .get(API_URL+`/getByCategoryId/${categoryId}`,{
+        .get(API_URL+`/?categoryId=${categoryId}`,{
             params: {
               pageNumber: pageNumber,
               pageSize: pageSize

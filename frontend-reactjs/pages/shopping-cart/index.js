@@ -1,60 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CartItemRow from "../../components/shopping-cart/cart-item-row";
-import PricingCard from "../../components/shopping-cart/pricing-card";
+import { CheckoutProvider } from "../../context/checkout-context";
+import ShoppingCart from "../../components/shopping-cart/shopping-cart"
 
-function ShoppingCart() {
+export default function ShoppingCartPage() {
   return (
-    <div className="container py-4">
-      <div className="row g-3">
-        <div className="col-lg-8">
-          <div className="card border-0 shadow-sm">
-            <div className="card-header bg-white">
-              <h5 className="my-2">Shopping Cart</h5>
-            </div>
-            <div className="card-body p-2">
-              {/* <CartItem />
-              <hr className="text-muted my-1" />
-              <CartItem />
-              <hr className="text-muted my-1" />
-              <CartItem /> */}
-              <div className="table-responsive">
-                <table className="table table-borderless align-middle mb-0">
-                  {/* <thead>
-                    <tr>
-                      <th scope="col">Product</th>
-                      <th scope="col">Price</th>
-                      <th scope="col">Qty</th>
-                      <th scope="col"></th>
-                    </tr>
-                  </thead> */}
-                  <tbody>
-                    <CartItemRow />
-                    <CartItemRow />
-                    <CartItemRow />
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div className="card-footer py-3">
-              <small>
-                <FontAwesomeIcon
-                  icon={["fas", "truck"]}
-                  className="text-success me-2"
-                />
-                Delivery within 1-2 weeks
-              </small>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <PricingCard />
-        </div>
-      </div>
-      <br />
-      <br />
-      <br />
-    </div>
+    <CheckoutProvider>
+      <ShoppingCart></ShoppingCart>
+    </CheckoutProvider>
   );
 }
-
-export default ShoppingCart;

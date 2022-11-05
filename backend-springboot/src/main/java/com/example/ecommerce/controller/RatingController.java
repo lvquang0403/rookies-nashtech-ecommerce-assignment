@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class RatingController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    ResponseEntity<RatingDTO> createRating(@RequestBody RatingPostDTO ratingDTO) {
+    ResponseEntity<RatingDTO> createRating(@RequestBody @Valid RatingPostDTO ratingDTO) {
         return ResponseEntity.ok(ratingService.createRating(ratingDTO));
     }
 
@@ -39,7 +40,7 @@ public class RatingController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<?> updateRating(
             @PathVariable Long ratingId,
-            @RequestBody RatingPostDTO ratingDTO) {
+            @RequestBody @Valid RatingPostDTO ratingDTO) {
         ratingService.updateById(ratingId, ratingDTO);
         return ResponseEntity.ok("Successfully");
     }

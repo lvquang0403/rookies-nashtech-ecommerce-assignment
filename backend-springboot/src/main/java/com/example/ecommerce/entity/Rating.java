@@ -1,6 +1,5 @@
 package com.example.ecommerce.entity;
 
-import com.example.ecommerce.dto.RatingDTO;
 import lombok.*;
 
 import javax.persistence.*;

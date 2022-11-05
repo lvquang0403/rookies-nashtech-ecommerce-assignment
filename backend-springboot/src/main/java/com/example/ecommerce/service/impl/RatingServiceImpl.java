@@ -6,6 +6,7 @@ import com.example.ecommerce.dto.request.RatingPostDTO;
 import com.example.ecommerce.entity.Customer;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.entity.Rating;
+import com.example.ecommerce.exception.BadRequestException;
 import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.CustomerRepository;
 import com.example.ecommerce.repository.ProductRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +45,9 @@ public class RatingServiceImpl implements RatingService {
                 (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long customerId = userDetails.getCustomerId();
         Customer foundCustomer = customerRepository.findById(customerId).orElse(null);
+        if(ratingRepository.findByProductProductIdAndCustomerCustomerId(ratingDTO.getProductId(), customerId).isPresent()){
+            throw new BadRequestException(String.format("Customer with id %s already rate product with id %s",customerId, ratingDTO.getProductId()));
+        }
         Date currentDay = Date.valueOf(LocalDate.now());
         return RatingDTO.fromRating(ratingRepository.save(new Rating(
                 ratingDTO.getComment(),

@@ -12,6 +12,7 @@ import com.example.ecommerce.repository.*;
 import com.example.ecommerce.service.AttributeProductService;
 import com.example.ecommerce.service.AttributeService;
 import com.example.ecommerce.service.ProductService;
+import com.example.ecommerce.service.RatingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,8 +41,9 @@ public class ProductServiceImpl implements ProductService {
     private final AttributeProductRepository attributeProductRepository;
     private final ImageRepository imageRepository;
     private final RatingRepository ratingRepository;
+    private final RatingService ratingService;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, AttributeRepository attributeRepository, AttributeService attributeService, AttributeProductService attributeProductService, AttributeProductRepository attributeProductRepository, ImageRepository imageRepository, RatingRepository ratingRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, AttributeRepository attributeRepository, AttributeService attributeService, AttributeProductService attributeProductService, AttributeProductRepository attributeProductRepository, ImageRepository imageRepository, RatingRepository ratingRepository, RatingService ratingService) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.attributeRepository = attributeRepository;
@@ -50,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
         this.attributeProductRepository = attributeProductRepository;
         this.imageRepository = imageRepository;
         this.ratingRepository = ratingRepository;
+        this.ratingService = ratingService;
     }
 
     @Override
@@ -179,7 +182,8 @@ public class ProductServiceImpl implements ProductService {
                 images.stream().map(ImageDTO::fromImage).collect(toList()),
                 listAttribute,
                 foundProduct.getPrice(),
-                numberRating
+                numberRating,
+                ratingService.findAllByProductId(0,30,productId)
         );
     }
 
@@ -239,7 +243,7 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException(String.format("Category with id : %s is not found", categoryId));
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<Product> productPage = productRepository.findByCategoryId(categoryId, pageable);
+        Page<Product> productPage = productRepository.findByCategoryCategoryId(categoryId, pageable);
         List<Product> foundProducts = productPage.getContent();
         List<ProductViewHomeDTO> listFoundProductDTO = foundProducts.stream()
                 .map(product -> {

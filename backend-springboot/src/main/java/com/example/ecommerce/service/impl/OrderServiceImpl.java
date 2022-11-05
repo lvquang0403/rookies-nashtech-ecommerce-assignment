@@ -120,7 +120,10 @@ public class OrderServiceImpl implements OrderService {
                     item.getProduct().getProductName(),
                     item.getPrice(),
                     item.getQuantity(),
-                    item.getTotalPrice()));
+                    item.getColor(),
+                    item.getTotalPrice(),
+                    item.getProduct().getProductId()
+            ));
         }
         return itemViewDTOS;
     }

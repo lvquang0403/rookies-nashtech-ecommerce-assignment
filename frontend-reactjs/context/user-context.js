@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { USER_TYPE } from '../constant/user-type'
 
 const Context = createContext();
@@ -6,8 +6,19 @@ const Context = createContext();
 export function UserProvider({ children }) {
     const [user, setUser] = useState({
         id: null,
-        type: USER_TYPE.ADMIN
+        type: [],
+        name: '',
+        token: '',
+        numberCartItems: 0
     });
+
+
+    useEffect(()=> {
+        const userJson = sessionStorage.getItem('user');
+        if(userJson) {
+            setUser(JSON.parse(userJson))
+        }
+    }, [])
     return (
         <Context.Provider value={[user, setUser]}>{children}</Context.Provider>
     );

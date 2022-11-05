@@ -16,6 +16,7 @@ public class ItemViewDTO {
     private String productName;
     private BigDecimal price;
     private Integer quantity;
+    private String color;
     private BigDecimal totalPrice;
-
+    private Long productId;
 }

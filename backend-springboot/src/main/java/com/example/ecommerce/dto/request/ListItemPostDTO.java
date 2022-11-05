@@ -1,5 +1,4 @@
 package com.example.ecommerce.dto.request;
-import com.example.ecommerce.dto.request.ItemPostDTO;
 import lombok.*;
 
 import java.util.List;

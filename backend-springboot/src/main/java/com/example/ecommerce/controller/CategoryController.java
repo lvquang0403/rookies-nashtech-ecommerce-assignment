@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class CategoryController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<Category> createCategory(@RequestBody Category category){
+    ResponseEntity<Category> createCategory(@RequestBody @Valid Category category){
         return ResponseEntity.ok(categoryService.createCategory(category));
     }
 
@@ -36,7 +37,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<Category> updateCategory(
             @PathVariable Long categoryId,
-            @RequestBody Category category)
+            @RequestBody @Valid Category category)
     {
         return ResponseEntity.ok(categoryService.updateById(categoryId, category));
     }

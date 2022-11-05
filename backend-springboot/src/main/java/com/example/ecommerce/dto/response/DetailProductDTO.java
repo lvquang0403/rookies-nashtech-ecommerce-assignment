@@ -1,6 +1,7 @@
 package com.example.ecommerce.dto.response;
 
 import com.example.ecommerce.dto.ImageDTO;
+import com.example.ecommerce.dto.RatingDTO;
 import com.example.ecommerce.dto.request.AttributeDTO;
 import lombok.*;
 
@@ -19,5 +20,6 @@ public class DetailProductDTO {
     private List<AttributeDTO> attributes;
     private BigDecimal price;
     private int numberRating;
+    private List<RatingDTO> ratings;
 
 }

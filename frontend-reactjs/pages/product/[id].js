@@ -4,14 +4,19 @@ import { useRouter } from 'next/router'
 import ProductSimpleHorizontal from "../../components/product/product-simple-horizontal";
 import { useState, useEffect } from "react";
 import productService from "../../services/product.service";
+import Rating from "../../components/rating/Rating";
+import ratingService from "../api/ratingService";
+import UserRating from "../../components/rating/UserRating";
+import { useUserContext } from "../../context/user-context";
 import React from "react";
-
 function ProductDetail() {
   const imagess = [1, 2, 3]
+  const [user, setUser] = useUserContext()
   const [images, setImages] = useState([])
-  const [color, setColor] = useState(0)
+  const [color, setColor] = useState('')
   const router = useRouter()
   const [product, setProduct] = useState({})
+  const [ratings, setRatings] = useState([])
   const [products, setProducts] = useState([])
   const [attributes, setAttributes] = useState()
   const {
@@ -19,17 +24,32 @@ function ProductDetail() {
 
   } = router
 
-
+  const handleSubmit = (token, productId, score, comment)=> {
+    ratingService.createRating(token, productId, score, comment)
+    .then(res => setRatings([...ratings, res.data]))
+    .catch(res => {
+      if(res.response.status === 400){
+        alert("Bạn đã đánh giá cho sản phẩm này !!")
+      }
+    })
+  }
   useEffect(() => {
     const fetchData = async () => {
 
       if (categoryId) {
         await productService.getProductByCategoryId(categoryId, 0, 5)
-          .then(res => setProducts(res.data.products))
+          .then(res => {
+            setProducts(res.data.products)
+          })
       }
     }
     fetchData();
   }, [categoryId])
+
+  const change = (e) => {
+    console.log(e.target.value);
+    setColor(e.target.value)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,14 +57,16 @@ function ProductDetail() {
         await productService.getDetaiProduct(id)
           .then(res => {
             setProduct(res.data)
+            setRatings(res.data.ratings)
             setImages(res.data.images)
+            setColor(res.data.images[0].color)
             setAttributes(res.data.attributes)
           })
       }
     }
     fetchData();
   }, [id]);
-  console.log(products)
+  console.log(product)
   return (
     <div className="vstack">
       <div className="bg-secondary">
@@ -75,7 +97,7 @@ function ProductDetail() {
                   <div className="ratio ratio-1x1">
                     <img
                       className="rounded"
-                      src={images[color] && images[color].url}
+                      src={images && (images.find(e => e.color === color))?.url}
                       width={300}
                       height={300}
                       alt="Product image."
@@ -88,7 +110,7 @@ function ProductDetail() {
                   {images.map((e) => {
                     return (
                       <div
-                        key={e}
+                        key={e.color}
                         style={{ width: 60 }}
                         className="me-2 ratio ratio-1x1"
                       >
@@ -150,20 +172,22 @@ function ProductDetail() {
                   <dt className="col-12 fw-semibold">Color</dt>
                   <dd className="col-12">
                     <div className="hstack gap-2">
-                      <div className="form-check" onChange={e => setColor(e.target.value)}>
+                      <div className="form-check">
                         {images.map((img, index) => {
                           return (
-                            <div key={index}>
+                            <div key={img.color}>
                               <input
-                                value={index}
+                                onChange={change}
+                                value={img.color}
                                 type="radio"
+                                checked={(!color && index === 0) || img.color === color}
                                 className="form-check-input"
-                                name="color1"
-                                id="c1"
+                                name={img.color}
+                                id={img.color}
                               />
                               <label
                                 className="form-check-label fw-medium"
-                                htmlFor="c1"
+                                htmlFor={img.color}
                               >
                                 {img.color}
                               </label>
@@ -257,14 +281,22 @@ function ProductDetail() {
               <div className="card-body">
                 {products && products.map(product => <ProductSimpleHorizontal
                   key={product.productId}
-                  price={product.price}
-                  src={product.images[0].url}
-                  productName={product.productName}
-                  id={product.productId} />)}
+                  product={product} categoryId={categoryId} />)}
                 {/* <ProductSimpleHorizontal id={1} /> */}
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="container">
+        <h1>Đánh Giá</h1>
+        <div className="row">
+          { user.id && <Rating productId={product.productId} handleSubmit={handleSubmit} ratings={ratings} />}
+        </div>
+        <div className="row">
+          {
+            ratings && ratings.map((rating,index) => (<UserRating key={index} rating={rating}/>))
+          }
         </div>
       </div>
       <br />

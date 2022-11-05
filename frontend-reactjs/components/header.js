@@ -3,18 +3,45 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router'
 import categoryService from "../services/category.service";
-
+import { useUserContext } from '../context/user-context';
+import { USER_TYPE } from '../constant/user-type'
+import cartService from "../pages/api/cartService";
 
 function Header({ simple, hideAuth }) {
   const router = useRouter()
+  const [user, setUser] = useUserContext();
   let title = process.env.APP_NAME;
-  const [categorys, setCategorys] = useState([])
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('user');
+    setUser({
+      id: null,
+      type: [],
+      name: '',
+      token: '',
+      numberCartItems: 0
+    })
+    router.push("/")
+  }
+
+  const [categorys, setCategorys] = useState([])
   useEffect(() => {
     categoryService.getCategoris().then(res => {
       setCategorys(res.data)
     })
+    .catch(res => console.log(res))
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  // useEffect(() => {
+  //   cartService.getNumberCartItems(user)
+  //   .then(res => setNumberCartItems(res.data))
+  //   .catch(res => console.log(res))
+
+  // },[user])
 
   const handleSearch = () => {
     const productName = document.getElementById('search').value
@@ -24,7 +51,7 @@ function Header({ simple, hideAuth }) {
         productName: productName
       },
     })
-    
+
   }
 
   return (
@@ -60,7 +87,7 @@ function Header({ simple, hideAuth }) {
             </form>
           </div>
           <div className="d-flex">
-            {!hideAuth && (
+            {user.type.length === 0 && (
               <>
                 <Link href="/auth/login">
                   <a className="btn btn-outline-dark d-none d-md-block">
@@ -74,15 +101,25 @@ function Header({ simple, hideAuth }) {
                 </Link>
               </>
             )}
-            <Link href="/shopping-cart">
-              <a className="btn btn-light border position-relative ms-2 fw-normal">
-                <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
-                &nbsp;Cart
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger my-auto">
-                  3
-                </span>
-              </a>
-            </Link>
+            {
+              (user.type.includes(USER_TYPE.ADMIN) || user.type.includes(USER_TYPE.USER)) && (
+
+                <div>
+                  <button type="button" className="btn btn-secondary me-2" onClick={() => handleLogout()}>Logout</button>
+                  <span>Hello {user.name}</span>
+                  <Link href="/shopping-cart">
+                    <a className="btn btn-light border position-relative ms-2 fw-normal">
+                      <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
+                      &nbsp;Cart
+                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger my-auto">
+                        {user.numberCartItems}
+                      </span>
+                    </a>
+                  </Link>
+                </div>
+
+              )
+            }
           </div>
         </div>
       </nav>
@@ -102,15 +139,15 @@ function Header({ simple, hideAuth }) {
             </button>
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
-              {categorys.map(category => {
-                return (
-                  <li key={category.categoryId} className="nav-item">
-                  <Link href={`/explore/${category.categoryId}`}>
-                    <a className="nav-link h4 mx-3 text-uppercase font-weight-normal">{category.categoryName}</a>
-                  </Link>
-                </li>
-                )
-              })}
+                {categorys.map(category => {
+                  return (
+                    <li key={category.categoryId} className="nav-item">
+                      <Link href={`/explore/${category.categoryId}`}>
+                        <a className="nav-link h4 mx-3 text-uppercase font-weight-normal">{category.categoryName}</a>
+                      </Link>
+                    </li>
+                  )
+                })}
               </ul>
               <ul className="ms-auto navbar-nav">
                 <li className="nav-item dropdown">

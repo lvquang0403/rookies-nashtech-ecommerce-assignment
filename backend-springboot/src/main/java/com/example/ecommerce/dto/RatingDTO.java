@@ -16,7 +16,7 @@ public class RatingDTO {
 
     public static RatingDTO fromRating(Rating rating){
         return new RatingDTO(
-                rating.getCustomer().getFirstName() + rating.getCustomer().getLastName(),
+                rating.getCustomer().getFirstName() + " " + rating.getCustomer().getLastName(),
                 rating.getComment(),
                 rating.getScore()
         );

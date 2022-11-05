@@ -1,7 +1,6 @@
 package com.example.ecommerce.dto.response;
 
 import com.example.ecommerce.dto.ImageDTO;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.math.BigDecimal;

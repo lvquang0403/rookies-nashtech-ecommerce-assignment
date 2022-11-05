@@ -20,8 +20,9 @@ public class UserDetailsImpl implements UserDetails {
 
     private Long customerId;
 
+    private String firstName;
+    private String lastName;
     private String username;
-
     private String email;
 
     @JsonIgnore
@@ -35,6 +36,8 @@ public class UserDetailsImpl implements UserDetails {
                 .collect(Collectors.toList());
         return new UserDetailsImpl(
                 customer.getCustomerId(),
+                customer.getFirstName(),
+                customer.getLastName(),
                 customer.getUserName(),
                 customer.getEmail(),
                 customer.getPassword(),

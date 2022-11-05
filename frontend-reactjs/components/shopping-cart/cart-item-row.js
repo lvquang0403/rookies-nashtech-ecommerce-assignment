@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 
-function CartItemRow() {
+function CartItemRow({ item }) {
   const getQtyInput = () => {
     return (
       <div className="input-group input-group-sm" style={{ width: 100 }}>
@@ -29,7 +29,7 @@ function CartItemRow() {
         <div className="hstack">
           <img
             className="rounded"
-            src={``}
+            src={item.image}
             width={80}
             height={80}
             alt="Product image."
@@ -39,7 +39,8 @@ function CartItemRow() {
             <span className="h5">
               <Link href="/product/1">
                 <a className="link-dark text-decoration-none">
-                  {/* {productName} */}
+                  sdsdsadsadsda
+                  {item.productName}
                 </a>
               </Link>
             </span>

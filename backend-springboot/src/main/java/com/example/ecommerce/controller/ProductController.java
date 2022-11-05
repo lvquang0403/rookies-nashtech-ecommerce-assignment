@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 
 
 @RestController
@@ -45,7 +46,7 @@ public class ProductController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<ResponseProductDTO> createProduct(@RequestBody ProductPostDTO productDTO){
+    ResponseEntity<ResponseProductDTO> createProduct(@RequestBody @Valid ProductPostDTO productDTO){
         return ResponseEntity.ok(productService.createProduct(productDTO));
     }
 
@@ -53,7 +54,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> updateProduct(
             @PathVariable Long productId,
-            @RequestBody ProductPutDTO productDTO)
+            @RequestBody @Valid ProductPutDTO productDTO)
     {
         productService.updatedProductById(productDTO, productId);
         return ResponseEntity.ok("successfully");

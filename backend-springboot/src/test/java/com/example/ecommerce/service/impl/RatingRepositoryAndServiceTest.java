@@ -1,5 +1,4 @@
 package com.example.ecommerce.service.impl;
-import com.example.ecommerce.dto.RatingDTO;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.service.RatingService;

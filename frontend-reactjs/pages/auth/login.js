@@ -1,10 +1,54 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import Layout from "../../components/layout";
+import { UserProvider } from "../../context/user-context";
+import { useUserContext } from "../../context/user-context";
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+import { useForm } from "react-hook-form";
+import authService from "../api/authService";
+import cartService from "../api/cartService";
 
 function Login() {
   const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [pass, setPass] = useState('');
+  const [user, setUser] = useUserContext();
+
+  const getNumberCartItems = (data) => {
+    cartService.getNumberCartItems(data.token).then(res => {
+      setUser({
+        id: data.customerId,
+        type: data.roles,
+        name: data.lastName,
+        token: data.token,
+        numberCartItems: res.data
+      });
+
+      sessionStorage.setItem("user", JSON.stringify({
+        id: data.customerId,
+        type: data.roles,
+        name: data.lastName,
+        token: data.token
+      }));
+
+      router.push('/')
+    }
+    )
+  }
+  const handleLogin = () => {
+    authService.signin(username, pass)
+      .then(res => {
+       getNumberCartItems(res.data) ;
+
+      })
+      .catch(res => alert(res.data))
+  }
+useEffect(()=>{
+},[user])
+  console.log(user)
   return (
     <div className="container py-3">
       <div className="row my-4">
@@ -14,15 +58,16 @@ function Login() {
               <h4 className="card-title fw-bold mt-2 mb-4">Sign In</h4>
               <form className="row g-2">
                 <div className="col-md-12">
-                  <label className="form-label">User Name</label>
+                  <label className="form-label" >User Name</label>
                   <input
+                    value={username} onChange={(e) => setUsername(e.target.value)}
                     className="form-control"
                     placeholder="Username"
                   />
                 </div>
                 <div className="col-md-12">
                   <label className="form-label">Password</label>
-                  <input type="password" className="form-control" />
+                  <input type="password" className="form-control" value={pass} onChange={(e) => setPass(e.target.value)} />
                 </div>
                 <div className="col-md-12">
                   {/* <Link href="/auth/forgot-password">
@@ -34,7 +79,7 @@ function Login() {
                     type="button"
                     className="btn btn-primary w-100"
                     onClick={() => {
-                      router.push({ pathname: "/account/profile" });
+                      handleLogin()
                     }}
                   >
                     Login
@@ -88,9 +133,11 @@ function Login() {
 
 Login.getLayout = (page) => {
   return (
-    <Layout simpleHeader hideAuth>
-      {page}
-    </Layout>
+    <UserProvider>
+      <Layout simpleHeader hideAuth>
+        {page}
+      </Layout>
+    </UserProvider>
   );
 };
 

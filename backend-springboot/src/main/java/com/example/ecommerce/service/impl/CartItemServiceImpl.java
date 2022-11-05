@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,7 +71,9 @@ public class CartItemServiceImpl implements CartItemService {
                             cartItem.getProduct().getProductName(),
                             cartItem.getPrice(),
                             cartItem.getQuantity(),
-                            cartItem.getTotalPrice()
+                            cartItem.getColor(),
+                            cartItem.getTotalPrice(),
+                            cartItem.getProduct().getProductId()
                     );
                 }).collect(Collectors.toList());
 
@@ -121,6 +122,25 @@ public class CartItemServiceImpl implements CartItemService {
         cartItemRepository.save(foundCartItem);
 
         return new CartDTO(cart.getCartId(), currentDay);
+    }
+
+    @Override
+    public Integer getNumberCartItemsByCustomerId() {
+        UserDetailsImpl userDetails =
+                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long customerId = userDetails.getCustomerId();
+        Date currentDay = Date.valueOf(LocalDate.now());
+        Cart cart = cartRepository.findByCustomerCustomerId(customerId)
+                .orElseGet(() -> {
+                    Cart newCart = cartRepository.save(Cart.builder()
+                            .createdDate(currentDay)
+                            .customer(customerRepository.findById(customerId).get())
+                            .build());
+                    Optional<Customer> foundCustomer = customerRepository.findById(customerId);
+                    foundCustomer.ifPresent(customer -> customer.setCart(newCart));
+                    return customerRepository.save(foundCustomer.get()).getCart();
+                });
+        return cartItemRepository.sumByCartId(cart.getCartId());
     }
 
 

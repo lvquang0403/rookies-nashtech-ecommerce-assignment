@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins="*")
@@ -35,6 +34,11 @@ public class CartController {
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize)
     {
         return ResponseEntity.ok(cartItemService.findByCustomerId(pageNumber, pageSize));
+    }
+
+    @GetMapping("number-cart-items")
+    ResponseEntity getNumberCartItems(){
+        return ResponseEntity.ok(cartItemService.getNumberCartItemsByCustomerId());
     }
 
     @PutMapping("cart-item")

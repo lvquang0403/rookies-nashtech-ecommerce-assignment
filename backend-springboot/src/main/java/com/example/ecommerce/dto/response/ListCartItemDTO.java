@@ -1,6 +1,5 @@
 package com.example.ecommerce.dto.response;
 
-import com.example.ecommerce.dto.response.ItemViewDTO;
 import lombok.*;
 
 import java.util.List;
