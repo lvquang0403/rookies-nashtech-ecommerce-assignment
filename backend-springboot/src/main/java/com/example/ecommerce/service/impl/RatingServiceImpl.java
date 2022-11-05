@@ -37,7 +37,7 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public RatingDTO createRating(RatingPostDTO ratingDTO) {
         Product foundProduct = productRepository.findById(ratingDTO.getProductId()).orElseThrow(
-                () -> new NotFoundException(String.format("Product with id : %d is not found",ratingDTO.getProductId()))
+                () -> new NotFoundException(String.format("Product with id : %d is not found", ratingDTO.getProductId()))
         );
         UserDetailsImpl userDetails =
                 (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
