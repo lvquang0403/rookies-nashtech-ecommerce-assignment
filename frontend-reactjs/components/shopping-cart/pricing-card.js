@@ -1,8 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useRouter } from 'next/router'
 
-function PricingCard({ totalPrice }) {
 
+function PricingCard({ totalPrice, end, handleConfirm, productId }) {
+  const router = useRouter()
   return (
     <div className="card border-0 shadow-sm">
       <div className="card-body">
@@ -29,9 +31,16 @@ function PricingCard({ totalPrice }) {
 
           {(
             <div className="d-grid gap-2 mt-2">
-              <Link href="/checkout/delivery-info">
-                <a className="btn btn-primary">Checkout</a>
-              </Link>
+              {end &&
+                <div className="mt-3 d-grid gap-2">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleConfirm(productId)}
+                  >
+                    Confirm
+                  </button>
+                </div>
+              }
               <Link href="/">
                 <a className="btn btn-outline-primary">Continue Shopping</a>
               </Link>

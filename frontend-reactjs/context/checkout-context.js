@@ -6,6 +6,7 @@ const Context = createContext();
 
 export function CheckoutProvider({ children }) {
     const [user, setUser] = useUserContext()
+    const [oderInfor, setOrderInfor] = useState({});
     const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
@@ -16,7 +17,7 @@ export function CheckoutProvider({ children }) {
         }
       }, [user])
     return (
-        <Context.Provider value={[cartItems, setCartItems]}>{children}</Context.Provider>
+        <Context.Provider value={[cartItems, setCartItems, oderInfor, setOrderInfor]}>{children}</Context.Provider>
     );
 }
 

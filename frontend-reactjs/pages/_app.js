@@ -8,6 +8,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import Layout from "../components/layout";
 import { UserProvider } from "../context/user-context";
+import { CheckoutProvider } from "../context/checkout-context"
 
 config.autoAddCss = false;
 library.add(fab, fas, far);
@@ -24,9 +25,9 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <UserProvider>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
     </UserProvider>
   );
 }

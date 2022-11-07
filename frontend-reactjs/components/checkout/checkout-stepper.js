@@ -31,13 +31,13 @@ function CheckoutStepper({ step = 1 }) {
         >
           <FontAwesomeIcon icon={["fas", step > 1 ? "check" : "truck"]} />
         </button>
-        <button
+        {/* <button
           disabled={step < 2}
           className={stepClass + " top-50 start-50 translate-middle"}
           style={{ width: 40, height: 40 }}
         >
           <FontAwesomeIcon icon={["fas", step > 2 ? "check" : "credit-card"]} />
-        </button>
+        </button> */}
         <button
           disabled={step < 3}
           className={stepClass + " top-50 start-100 translate-middle"}
@@ -52,9 +52,9 @@ function CheckoutStepper({ step = 1 }) {
         <span className="position-absolute top-50 start-0 translate-middle">
           Delivery
         </span>
-        <span className="position-absolute top-50 start-50 translate-middle">
+        {/* <span className="position-absolute top-50 start-50 translate-middle">
           Payment
-        </span>
+        </span> */}
         <span className="position-absolute top-50 start-100 translate-middle">
           Confirmed
         </span>

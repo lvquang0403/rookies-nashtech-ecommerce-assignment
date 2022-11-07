@@ -14,16 +14,26 @@ import cartService from "../api/cartService";
 function Login() {
   const router = useRouter();
   const [username, setUsername] = useState('');
-  const [pass, setPass] = useState('');
+  // const [pass, setPass] = useState('');
   const [user, setUser] = useUserContext();
 
+  const userSchema = yup.object().shape({
+    userName: yup.string().required("User Name is required").min(6).max(12),
+    password: yup.string().required("Password is required").min(6).max(15)
+  })
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    resolver: yupResolver(userSchema)
+});
   const getNumberCartItems = (data) => {
+    console.log(data)
     cartService.getNumberCartItems(data.token).then(res => {
       setUser({
         id: data.customerId,
         type: data.roles,
         name: data.lastName,
         token: data.token,
+        phone: data.phone,
+        address: data.address,
         numberCartItems: res.data
       });
 
@@ -31,23 +41,25 @@ function Login() {
         id: data.customerId,
         type: data.roles,
         name: data.lastName,
-        token: data.token
+        token: data.token,
+        phone: data.phone,
+        address: data.address,
       }));
 
       router.push('/')
     }
     )
   }
-  const handleLogin = () => {
-    authService.signin(username, pass)
+  
+  const handleLogin = (data) => {
+    console.log(data)
+    authService.signin(data.userName, data.password)
       .then(res => {
-       getNumberCartItems(res.data) ;
+        getNumberCartItems(res.data);
 
       })
       .catch(res => alert(res.data))
   }
-useEffect(()=>{
-},[user])
   console.log(user)
   return (
     <div className="container py-3">
@@ -56,18 +68,21 @@ useEffect(()=>{
           <div className="card border-0 shadow-sm">
             <div className="card-body px-4">
               <h4 className="card-title fw-bold mt-2 mb-4">Sign In</h4>
-              <form className="row g-2">
+              <form className="row g-2" onSubmit={handleSubmit(handleLogin)}>
                 <div className="col-md-12">
                   <label className="form-label" >User Name</label>
                   <input
-                    value={username} onChange={(e) => setUsername(e.target.value)}
+                    // value={username} onChange={(e) => setUsername(e.target.value)}
                     className="form-control"
+                    {...register("userName")}
                     placeholder="Username"
                   />
+                  <span className="error text-danger">{errors.userName?.message}</span>
                 </div>
                 <div className="col-md-12">
                   <label className="form-label">Password</label>
-                  <input type="password" className="form-control" value={pass} onChange={(e) => setPass(e.target.value)} />
+                  <input type="password" className="form-control" {...register("password")} placeholder="*******" />
+                  <span  className="error text-danger">{errors.password?.message}</span>
                 </div>
                 <div className="col-md-12">
                   {/* <Link href="/auth/forgot-password">
@@ -75,15 +90,16 @@ useEffect(()=>{
                   </Link> */}
                 </div>
                 <div className="col-md-12 mt-4">
-                  <button
-                    type="button"
+                  <input
+                    type="submit"
                     className="btn btn-primary w-100"
-                    onClick={() => {
-                      handleLogin()
-                    }}
-                  >
-                    Login
-                  </button>
+                    // onClick={() => {
+                    //   handleLogin()
+                    // }}
+                    value={"Log in"}
+                  />
+                  {/* Login */}
+
                 </div>
                 <div className="col-md-12">
                   <div className="row g-2">

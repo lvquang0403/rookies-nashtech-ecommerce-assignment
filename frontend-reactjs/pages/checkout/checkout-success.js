@@ -17,12 +17,9 @@ function CheckoutSuccess() {
               </div>
               <h3 className="text-center">Thank you for order</h3>
               <p className="text-center">
-                We&apos;ve received your order. You can track order status in
-                your&nbsp;
-                <Link href="/account/current-orders">
-                  <a>account setting</a>
+                <Link href="/">
+                  <button className="btn btn-primary">Continue shopping</button>
                 </Link>
-                .
               </p>
             </div>
           </div>

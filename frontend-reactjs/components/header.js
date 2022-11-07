@@ -6,11 +6,20 @@ import categoryService from "../services/category.service";
 import { useUserContext } from '../context/user-context';
 import { USER_TYPE } from '../constant/user-type'
 import cartService from "../pages/api/cartService";
+import UserRating from "./rating/UserRating";
 
 function Header({ simple, hideAuth }) {
   const router = useRouter()
-  const [user, setUser] = useUserContext();
+  const userContext = useUserContext()
+  const [user, setUser] = userContext ? userContext : [{ type: [] }, () => null];
   let title = process.env.APP_NAME;
+
+  const navigateProfile = () => {
+    router.push("/order")
+
+  }
+
+  const featuresAdmin = ["Product", "User", "Category"];
 
   const handleLogout = () => {
     sessionStorage.removeItem('user');
@@ -29,7 +38,7 @@ function Header({ simple, hideAuth }) {
     categoryService.getCategoris().then(res => {
       setCategorys(res.data)
     })
-    .catch(res => console.log(res))
+      .catch(res => console.log(res))
   }, []);
 
   useEffect(() => {
@@ -42,7 +51,6 @@ function Header({ simple, hideAuth }) {
   //   .catch(res => console.log(res))
 
   // },[user])
-
   const handleSearch = () => {
     const productName = document.getElementById('search').value
     router.push({
@@ -53,7 +61,7 @@ function Header({ simple, hideAuth }) {
     })
 
   }
-
+  console.log(user)
   return (
     <header>
       <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
@@ -105,6 +113,7 @@ function Header({ simple, hideAuth }) {
               (user.type.includes(USER_TYPE.ADMIN) || user.type.includes(USER_TYPE.USER)) && (
 
                 <div>
+                  <button type="button" className="btn btn-secondary me-2" onClick={() => navigateProfile()}>Profile</button>
                   <button type="button" className="btn btn-secondary me-2" onClick={() => handleLogout()}>Logout</button>
                   <span>Hello {user.name}</span>
                   <Link href="/shopping-cart">
@@ -139,15 +148,26 @@ function Header({ simple, hideAuth }) {
             </button>
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
-                {categorys.map(category => {
-                  return (
-                    <li key={category.categoryId} className="nav-item">
-                      <Link href={`/explore/${category.categoryId}`}>
-                        <a className="nav-link h4 mx-3 text-uppercase font-weight-normal">{category.categoryName}</a>
-                      </Link>
-                    </li>
-                  )
-                })}
+                {
+                // user.type.includes(USER_TYPE.ADMIN) ? (featuresAdmin.map(e => {
+                //   return (
+                //     <li key={e} className="nav-item">
+                //       <Link href={``}>
+                //         <a className="nav-link h4 mx-3 text-uppercase font-weight-normal">{e}</a>
+                //       </Link>
+                //     </li>
+                //   )
+                // }))
+                //   :
+                   categorys.map(category => {
+                    return (
+                      <li key={category.categoryId} className="nav-item">
+                        <Link href={`/explore/${category.categoryId}`}>
+                          <a className="nav-link h4 mx-3 text-uppercase font-weight-normal">{category.categoryName}</a>
+                        </Link>
+                      </li>
+                    )
+                  })}
               </ul>
               <ul className="ms-auto navbar-nav">
                 <li className="nav-item dropdown">

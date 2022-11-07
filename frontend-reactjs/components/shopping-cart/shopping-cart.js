@@ -4,6 +4,7 @@ import PricingCard from "../../components/shopping-cart/pricing-card";
 import { useUserContext } from "../../context/user-context";
 import CartItem from "../../components/shopping-cart/cart-item";
 import { useCheckoutContext } from "../../context/checkout-context"
+import Link from "next/link";
 
 function ShoppingCart() {
     const [user, setUser] = useUserContext();
@@ -12,7 +13,7 @@ function ShoppingCart() {
     console.log('aaa', cartItems)
     if (cartItems) {
         console.log('bbbb', cartItems.reduce((total, item) => {
-            return total + item.price
+            return total + item.totalPrice
         }, 0));
     }
     return (
@@ -66,6 +67,11 @@ function ShoppingCart() {
                     <PricingCard totalPrice={cartItems ? cartItems.reduce((total, item) => {
                         return total + item.totalPrice
                     }, 0) : 0} />
+                    <div className="d-grid gap-2 mt-2">
+                        <Link href="/checkout/delivery-info">
+                            <a className="btn btn-primary">Checkout</a>
+                        </Link>
+                    </div>
                 </div>
             </div>
             <br />

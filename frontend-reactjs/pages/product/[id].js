@@ -9,6 +9,7 @@ import ratingService from "../api/ratingService";
 import UserRating from "../../components/rating/UserRating";
 import { useUserContext } from "../../context/user-context";
 import React from "react";
+import Link from 'next/link'
 function ProductDetail() {
   const imagess = [1, 2, 3]
   const [user, setUser] = useUserContext()
@@ -19,20 +20,28 @@ function ProductDetail() {
   const [ratings, setRatings] = useState([])
   const [products, setProducts] = useState([])
   const [attributes, setAttributes] = useState()
+  const [avgRating, setAvgRating] = useState(0)
   const {
     query: { id, categoryId },
 
   } = router
 
-  const handleSubmit = (token, productId, score, comment)=> {
+  const handleSubmit = (token, productId, score, comment) => {
     ratingService.createRating(token, productId, score, comment)
-    .then(res => setRatings([...ratings, res.data]))
-    .catch(res => {
-      if(res.response.status === 400){
-        alert("Bạn đã đánh giá cho sản phẩm này !!")
-      }
-    })
+      .then(res => setRatings([...ratings, res.data]))
+      .catch(res => {
+        if (res.response.status === 400) {
+          alert("Bạn đã đánh giá cho sản phẩm này !!")
+        }
+      })
   }
+  useEffect(() => {
+    if (ratings.length > 0) {
+      setAvgRating((ratings.reduce((total, e) => total + e.score, 0) / ratings.length))
+    }
+  }, [ratings])
+
+
   useEffect(() => {
     const fetchData = async () => {
 
@@ -66,7 +75,8 @@ function ProductDetail() {
     }
     fetchData();
   }, [id]);
-  console.log(product)
+  console.log(avgRating)
+  console.log(ratings)
   return (
     <div className="vstack">
       <div className="bg-secondary">
@@ -135,10 +145,9 @@ function ProductDetail() {
                   {product.productName}
                 </div>
               </div>
-
               <div className="vstack">
                 <div className="d-flex mb-3 gap-2">
-                  <ProductRating />
+                  <ProductRating numberRating={avgRating} /><span>{`(${ratings.length}) reviews`}</span>
                   <span className="text-success small">
                     <FontAwesomeIcon icon={["fas", "check-circle"]} />
                     &nbsp;In Stock
@@ -202,12 +211,15 @@ function ProductDetail() {
                 </dl>
 
                 <div className="d-flex">
-                  <a
-                    href="#"
-                    className="btn btn-primary px-md-4 col col-md-auto me-2"
-                  >
-                    Buy now
-                  </a>
+                  <Link href={{ pathname: '/checkout/delivery-info', query: { productId: product.productId,
+                                                                              color: color }}}>
+                    <a
+                      href="#"
+                      className="btn btn-primary px-md-4 col col-md-auto me-2"
+                    >
+                      Buy now
+                    </a>
+                  </Link>
                   <button className="btn btn-outline-primary col col-md-auto">
                     <FontAwesomeIcon icon={["fas", "cart-plus"]} />
                     &nbsp;Add to cart
@@ -291,11 +303,11 @@ function ProductDetail() {
       <div className="container">
         <h1>Đánh Giá</h1>
         <div className="row">
-          { user.id && <Rating productId={product.productId} handleSubmit={handleSubmit} ratings={ratings} />}
+          {user.id && <Rating productId={product.productId} handleSubmit={handleSubmit} ratings={ratings} />}
         </div>
         <div className="row">
           {
-            ratings && ratings.map((rating,index) => (<UserRating key={index} rating={rating}/>))
+            ratings && ratings.map((rating, index) => (<UserRating key={index} rating={rating} />))
           }
         </div>
       </div>

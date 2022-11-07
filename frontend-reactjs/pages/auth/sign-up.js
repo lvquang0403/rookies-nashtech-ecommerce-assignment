@@ -1,11 +1,27 @@
 import Link from "next/link";
 import Layout from "../../components/layout";
-
-const cities = ["Yangon", "Mandalay", "Kalaw"];
-
-const states = ["Thar Kay Ta", "Daw Pon", "San Chaung"];
+import * as yup from 'yup'
+import { useForm } from "react-hook-form";
+import authService from "../api/authService";
+import { useRouter } from "next/router";
+import { yupResolver } from '@hookform/resolvers/yup'
 
 function SignUp() {
+  const router = useRouter();
+  // const [pass, setPass] = useState('');
+
+
+
+  const handleResgister = data => {
+    console.log(data)
+  };
+  const userSchema = yup.object().shape({
+    userName: yup.string().required("User Name is required").min(6).max(12),
+    password: yup.string().required("Password is required").min(6).max(15)
+  })
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    resolver: yupResolver(userSchema)
+});
   return (
     <div className="container py-3">
       <div className="row my-4">
@@ -13,55 +29,42 @@ function SignUp() {
           <div className="card border-0 shadow-sm">
             <div className="card-body px-4">
               <h4 className="card-title fw-bold mt-2 mb-4">Sign Up</h4>
-              <form className="row g-3">
+              <form className="row g-3" onSubmit={handleSubmit(handleResgister)}>
                 <div className="col-md-6">
                   <label className="form-label">First Name</label>
-                  <input type="text" className="form-control" />
+                  <input type="text" className="form-control" {...register("firstName")}/>
+                  <span className="error text-danger">{errors.userName?.message}</span>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Last Name</label>
-                  <input type="text" className="form-control" />
+                  <input type="text" className="form-control"{...register("lastName")} />
                 </div>
                 <div className="col-md-12">
                   <label className="form-label">Email</label>
-                  <input type="email" className="form-control" />
+                  <input type="email" className="form-control" {...register("email")} />
                 </div>
                 <div className="col-md-12">
-                  <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" />
-                    <label className="form-check-label">Male</label>
-                  </div>
-                  <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" />
-                    <label className="form-check-label">Female</label>
-                  </div>
+                <label className="form-label">Address</label>
+                <input type="text" className="form-control" {...register("address")} />
                 </div>
-                <div className="col-md-6">
-                  <label className="form-label">City</label>
-                  <select className="form-select">
-                    {cities.map((e, i) => {
-                      return <option key={i}>{e}</option>;
-                    })}
-                  </select>
+                <div className="col-md-12">
+                <label className="form-label">Phone</label>
+                <input type="text" className="form-control" {...register("phone")} />
                 </div>
-                <div className="col-md-6">
-                  <label className="form-label">States</label>
-                  <select className="form-select">
-                    {states.map((e, i) => {
-                      return <option key={i}>{e}</option>;
-                    })}
-                  </select>
+                <div className="col-md-12">
+                <label className="form-label">User Name</label>
+                <input type="email" className="form-control" {...register("userName")}  />
                 </div>
-                <div className="col-md-6">
-                  <label className="form-label">Password</label>
-                  <input type="password" className="form-control" />
+                <div className="col-md-12">
+                <label className="form-label">Password</label>
+                <input type="password" className="form-control" {...register("password")} />
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-12">
                   <label className="form-label">Confirm Password</label>
-                  <input type="password" className="form-control" />
+                  <input type="password" className="form-control"  {...register("confirmPass")}/>
                 </div>
                 <div className="col-md-12 mt-4">
-                  <button className="btn btn-primary w-100">Register</button>
+                  <input className="btn btn-primary w-100" type="submit" value="Register"/>
                 </div>
                 <div className="col-md-12">
                   <div className="text-muted bg-light rounded p-3 border small">

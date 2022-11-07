@@ -167,3 +167,9 @@ body {
 .my-list-item.active svg {
   color: var(--bs-primary);
 }
+
+.edit_user{
+  max-width: 400px;
+  width: 100%;
+  border: 1px solid #000000;
+}

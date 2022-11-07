@@ -49,7 +49,7 @@ function ProductSimpleCard({ product, categoryId }) {
           </a>
         </Link>
 
-        <ProductRating avgRating={product.avgRating} />
+        <ProductRating avgRating={product.numberRating} />
 
         <h6 className="mb-0 fw-semibold mt-2">{new Intl.NumberFormat('de-DE').format(product.price)} VND</h6>
       </div>
