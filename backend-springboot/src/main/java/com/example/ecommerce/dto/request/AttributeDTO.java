@@ -1,17 +1,19 @@
 package com.example.ecommerce.dto.request;
 
+import com.example.ecommerce.entity.Attribute;
 import com.example.ecommerce.entity.AttributeProduct;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttributeDTO {
+    @NotNull(message = "attributeId cannot be empty")
     private Long attributeId;
-    @NotBlank(message = "attributeName cannot be empty")
     private String attributeName;
     @NotBlank(message = "value cannot be empty")
     private String value;
@@ -26,6 +28,13 @@ public class AttributeDTO {
                 attribute.getAttribute().getAttributeId(),
                 attribute.getAttribute().getAttributeName(),
                 attribute.getValue()
+        );
+    }
+
+    public static AttributeDTO fromAttribute(Attribute attribute){
+        return new AttributeDTO(
+                attribute.getAttributeId(),
+                attribute.getAttributeName()
         );
     }
 

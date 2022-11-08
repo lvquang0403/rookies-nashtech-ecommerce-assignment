@@ -13,32 +13,34 @@ import javax.validation.Valid;
 
 @RestController
 @CrossOrigin(origins="*")
-@RequestMapping("api/v1/cart")
+@RequestMapping("api/v1/carts")
 public class CartController {
     private final CartItemService cartItemService;
-
     public CartController(CartItemService cartItemService) {
         this.cartItemService = cartItemService;
     }
 
-
     @PostMapping()
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    ResponseEntity<CartDTO> addProductToCart(@RequestBody @Valid ItemPostDTO item){
-        return ResponseEntity.ok(cartItemService.addToCart(item));
+    ResponseEntity<?> addProductToCart(
+            @RequestBody @Valid ItemPostDTO item){
+        cartItemService.addToCart(item);
+        return ResponseEntity.ok("Successfully");
     }
 
-    @GetMapping("cart-items")
+    @GetMapping("cart-items/{customerId}")
     ResponseEntity<ListCartItemDTO> getCartItems(
+            @PathVariable Long customerId,
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize)
     {
-        return ResponseEntity.ok(cartItemService.findByCustomerId(pageNumber, pageSize));
+        return ResponseEntity.ok(cartItemService.findByCustomerId(pageNumber, pageSize, customerId));
     }
 
-    @GetMapping("number-cart-items")
-    ResponseEntity getNumberCartItems(){
-        return ResponseEntity.ok(cartItemService.getNumberCartItemsByCustomerId());
+    @GetMapping("number-cart-items/{customerId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity getNumberCartItems(@PathVariable Long customerId){
+        return ResponseEntity.ok(cartItemService.getNumberCartItemsByCustomerId(customerId));
     }
 
     @PutMapping("cart-item")

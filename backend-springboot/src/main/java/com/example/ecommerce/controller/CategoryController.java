@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins="*")
-@RequestMapping("api/v1/category")
+@RequestMapping("api/v1/categories")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -25,10 +25,9 @@ public class CategoryController {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<List<Category>> getAllCategory(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "30", required = false) int pageSize
     ) {
         return ResponseEntity.ok(categoryService.findAll(pageNumber, pageSize));
     }

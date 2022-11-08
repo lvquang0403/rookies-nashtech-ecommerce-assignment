@@ -16,10 +16,12 @@ import java.util.List;
 public class DetailProductDTO {
     private Long productId;
     private String productName;
+    private String description;
     private List<ImageDTO> images;
     private List<AttributeDTO> attributes;
     private BigDecimal price;
     private int numberRating;
     private List<RatingDTO> ratings;
+    private Long categoryId;
 
 }

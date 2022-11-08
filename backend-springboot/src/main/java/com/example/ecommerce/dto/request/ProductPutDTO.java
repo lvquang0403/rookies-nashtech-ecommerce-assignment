@@ -1,5 +1,7 @@
 package com.example.ecommerce.dto.request;
 
+import com.example.ecommerce.dto.ImageDTO;
+import com.example.ecommerce.entity.Image;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -22,6 +24,9 @@ public class ProductPutDTO {
     private BigDecimal price;
     @Valid
     private List<AttributeDTO> attributes;
+    @Valid
+    private List<ImageDTO> images;
     @NotNull(message = "categoryId cannot be empty")
     private Long categoryId;
+
 }

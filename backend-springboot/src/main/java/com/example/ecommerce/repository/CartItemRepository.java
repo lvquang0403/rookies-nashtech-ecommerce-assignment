@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
-    Optional<CartItem> findByCartCartIdAndProductProductId(Long cartId, Long productId);
+    Optional<CartItem> findByCartCartIdAndProductProductIdAndColor(Long cartId, Long productId, String color);
     Page<CartItem> findCartItemByCartCartId(Pageable pageable, Long cartId);
-    List<CartItem> findCartItemByCartCartId(Long cartId);
+    Page<CartItem> findCartItemByCartCustomerCustomerId(Pageable pageable,Long customerId);
     Optional<CartItem> findByCartCartIdAndCartItemId(Long cartId, Long cartItemId);
-    @Query(value = "SELECT SUM (c.quantity) from CartItem c where c.cart.cartId = ?1")
-    Integer sumByCartId(Long cartId);
-    void deleteAllByCartCartId(Long cartId);
+    @Query(value = "SELECT SUM (c.quantity) from CartItem c where c.cart.customer.customerId = ?1")
+    Integer sumByCustomerId(Long customerId);
+    void deleteAllByCartCustomerCustomerId(Long customerId);
 }

@@ -39,7 +39,7 @@ public class Product {
 //    @EqualsAndHashCode.Exclude
 //    @ToString.Exclude
 //    private Set<Image> images;
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryId")
     private Category category;
 
@@ -53,6 +53,12 @@ public class Product {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Set<Rating> ratings;
+
+    @OneToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "orderItem_Id")
+    @JsonIgnore
+    private Set<CartItem> cartItems;
 
     public Product(String productName, String description, BigDecimal price, String productDetails, Date createdDate, Date updatedDate, Category category, Set<Image> images, Set<AttributeProduct> attributeProducts, Set<Rating> ratings) {
         this.productName = productName;

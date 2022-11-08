@@ -9,8 +9,9 @@ import java.util.List;
 
 public interface OrderService {
     OrderDTO createOrder(OrderPostDTO orderPostDTO);
+    OrderDTO createOrderWithOneItem(OrderPostDTO orderPostDTO, Long productId, String color);
     ListOrderDTO getOrders(int pageNumber, int pageSize);
-    ListOrderDTO getCustomerOrders(int pageNumber, int pageSize);
+    ListOrderDTO getCustomerOrders(int pageNumber, int pageSize, Long customerId);
     List<ItemViewDTO> getOrderItemsByOrderId(Long orderId);
     void updateStatus(Long orderId, Integer status);
 }

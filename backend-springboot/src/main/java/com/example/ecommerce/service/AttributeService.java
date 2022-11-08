@@ -8,9 +8,8 @@ import java.util.List;
 
 public interface AttributeService {
     List<AttributeDTO> findByProductId(Long productId);
-
+    List<AttributeDTO> findAll();
     AttributeDTO createAttribute(AttributePostDTO attributeDTO);
-
-    //    AttributeDTO updateById(Long attributeId, AttributeDTO attributeDTO);
+    void update(Long attributeId, String attributeName);
     void deleteById(Long id);
 }

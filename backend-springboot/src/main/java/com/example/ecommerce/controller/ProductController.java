@@ -15,16 +15,28 @@ import javax.validation.Valid;
 
 @RestController
 @CrossOrigin(origins="*")
-@RequestMapping("api/v1/product")
+@RequestMapping("api/v1/products")
 public class ProductController {
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-    @GetMapping("search")
+
+
+    @GetMapping()
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<ListProductViewDTO> getProducts(
+            @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "50", required = false) int pageSize
+    ) {
+        return ResponseEntity.ok(productService.findAll(pageNumber, pageSize));
+    }
+
+
+    @GetMapping("search")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<ListProductViewDTO> searchProducts(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
             @RequestParam(value = "productName",defaultValue = "", required = false) String productName
@@ -35,7 +47,7 @@ public class ProductController {
     ResponseEntity<DetailProductDTO> getProductById(@PathVariable Long productId){
         return ResponseEntity.ok(productService.findById(productId));
     }
-    @GetMapping()
+    @GetMapping("category")
     ResponseEntity<ListProductViewDTO> getProductsByCategoryId(
             @RequestParam(value = "pageNumber", defaultValue = "0")  int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,

@@ -20,14 +20,16 @@ public class AttributeProduct {
     @Column
     private String value;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+//    @Column
+//    private Long attributeId;
+    @ManyToOne
     @JoinColumn(name = "productId")
     private Product product;
 
     @ManyToOne
     @JoinColumn(name ="attributeId")
     private Attribute attribute;
-
+//    updatable = false, insertable = false
     public AttributeProduct(String value, Product product, Attribute attribute) {
         this.value = value;
         this.product = product;

@@ -33,11 +33,9 @@ public class AttributeServiceImpl implements AttributeService {
         if(productRepository.findById(productId).isEmpty()){
             throw new NotFoundException(String.format("Product with id : %d is not found", productId));
         }
-
         List<AttributeDTO> attributeDTOS = attributeProductRepository.findAllByProductProductId(productId)
                 .stream()
                 .map(AttributeDTO::fromAttributeProduct).collect(Collectors.toList());
-
         if(attributeDTOS.isEmpty()){
             throw new BadRequestException(String.format("Product with id %d don't contain any attribute",productId));
         }
@@ -45,44 +43,33 @@ public class AttributeServiceImpl implements AttributeService {
     }
 
     @Override
+    public List<AttributeDTO> findAll() {
+        return attributeRepository.findAll().stream().map(AttributeDTO::fromAttribute).collect(Collectors.toList());
+    }
+
+    @Override
     public AttributeDTO createAttribute(AttributePostDTO attributeDTO) {
         if(attributeRepository.findByAttributeNameIgnoreCase(attributeDTO.getAttributeName()).isPresent()){
             throw new DuplicateException(String.format("Attribute with name %s already exists",attributeDTO.getAttributeName()));
         }
-
         Attribute attribute = attributeRepository.save(new Attribute(
                 attributeDTO.getAttributeName(),
                 attributeDTO.getDescription()
         ));
-
         return new AttributeDTO(
                 attribute.getAttributeId(),
                 attribute.getAttributeName()
         );
     }
 
-//    @Override
-//    public AttributeDTO findById(Long attributeId) {
-//        Attribute foundAttribute = attributeRepository.findById(attributeId).orElseThrow(
-//                () -> new NotFoundException(String.format("Attribute with id : %d is not found",attributeId))
-//        );
-//        return AttributeDTO.fromAttribute(foundAttribute)
-//    }
-
-//    @Override
-//    public AttributeDTO updateById(Long attributeId, AttributeDTO attributeDTO) {
-//        Attribute foundAttribute = attributeRepository.findById(attributeId).orElseThrow(
-//                () -> new NotFoundException(String.format("Attribute with id : %d is not found",attributeId))
-//        );
-//        if(!attributeDTO.getAttributeName().isEmpty()){
-//            foundAttribute.setAttributeName(attributeDTO.getAttributeName());
-//        }
-//        if(!attributeDTO.getDescription().isEmpty()){
-//            foundAttribute.setDescription((attributeDTO.getDescription()));
-//        }
-//
-//        return Attribute.convertToDTO(attributeRepository.save(foundAttribute));
-//    }
+    @Override
+    public void update(Long attributeId, String attributeName) {
+        Attribute foundAttribute = attributeRepository.findById(attributeId)
+                .orElseThrow(
+                        () -> new NotFoundException(String.format("Attribute with id %s is not found", attributeId))
+                );
+        foundAttribute.setAttributeName(attributeName);
+    }
 
     @Override
     public void deleteById(Long attributeId) {

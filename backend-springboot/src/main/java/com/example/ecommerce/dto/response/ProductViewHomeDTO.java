@@ -19,7 +19,18 @@ public class ProductViewHomeDTO {
     private List<ImageDTO> images;
     private String productDetails;
     private Long categoryId;
+    private String categoryName;
     private int numberRating;
 
 
+    public ProductViewHomeDTO(Long productId, String productName, String description, BigDecimal price, List<ImageDTO> images, String productDetails, Long categoryId, String categoryName) {
+        this.productId = productId;
+        this.productName = productName;
+        this.description = description;
+        this.price = price;
+        this.images = images;
+        this.productDetails = productDetails;
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+    }
 }

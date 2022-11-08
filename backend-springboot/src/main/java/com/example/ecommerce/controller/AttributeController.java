@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins="*")
-@RequestMapping("api/v1/attribute")
+@RequestMapping("api/v1/attributes")
 public class AttributeController {
     private final AttributeService attributeService;
 
@@ -33,6 +33,21 @@ public class AttributeController {
         return ResponseEntity.ok(attributeService.findByProductId(productId));
     }
 
+    @GetMapping("")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<List<AttributeDTO>> getAttributes() {
+        return ResponseEntity.ok(attributeService.findAll());
+    }
+
+
+    @PutMapping("{attributeId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    ResponseEntity<?> update(
+            @PathVariable Long attributeId,
+            @RequestParam String attributeName) {
+        attributeService.update(attributeId, attributeName);
+        return ResponseEntity.ok("Successfully");
+    }
     @DeleteMapping("{attributeId}")
     @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> deleteAttribute(@PathVariable Long attributeId){

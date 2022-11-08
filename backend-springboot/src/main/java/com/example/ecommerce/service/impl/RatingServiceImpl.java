@@ -41,12 +41,9 @@ public class RatingServiceImpl implements RatingService {
         Product foundProduct = productRepository.findById(ratingDTO.getProductId()).orElseThrow(
                 () -> new NotFoundException(String.format("Product with id : %d is not found",ratingDTO.getProductId()))
         );
-        UserDetailsImpl userDetails =
-                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long customerId = userDetails.getCustomerId();
-        Customer foundCustomer = customerRepository.findById(customerId).orElse(null);
-        if(ratingRepository.findByProductProductIdAndCustomerCustomerId(ratingDTO.getProductId(), customerId).isPresent()){
-            throw new BadRequestException(String.format("Customer with id %s already rate product with id %s",customerId, ratingDTO.getProductId()));
+        Customer foundCustomer = customerRepository.findById(ratingDTO.getCustomerId()).orElse(null);
+        if(ratingRepository.findByProductProductIdAndCustomerCustomerId(ratingDTO.getProductId(), ratingDTO.getCustomerId()).isPresent()){
+            throw new BadRequestException(String.format("Customer with id %s already rate product with id %s",ratingDTO.getProductId(), ratingDTO.getProductId()));
         }
         Date currentDay = Date.valueOf(LocalDate.now());
         return RatingDTO.fromRating(ratingRepository.save(new Rating(
@@ -87,14 +84,4 @@ public class RatingServiceImpl implements RatingService {
         ratingRepository.deleteById(rating.getRatingId());
     }
 
-//    @Override
-//    public RatingDTO findByProductIdAndUserName(Long productId, String userName) {
-//        return Rating.convertToDTO(ratingRepository.findByProductIdAndUserName(productId, userName)
-//                .orElseThrow(
-//                        () -> new NotFoundException(
-//                                String.format("Rating with productId %s and userName %s is not found", productId, userName)
-//                        )
-//                )
-//        );
-//    }
 }

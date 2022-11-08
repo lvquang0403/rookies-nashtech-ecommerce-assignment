@@ -15,7 +15,7 @@ public interface ProductService {
 
     DetailProductDTO findById(Long id);
 
-    List<Product> findAll(int pageNumber, int pageSize);
+    ListProductViewDTO findAll(int pageNumber, int pageSize);
 
     ListProductViewDTO searchProductByProductName(int pageNumber, int pageSize, String productName);
 

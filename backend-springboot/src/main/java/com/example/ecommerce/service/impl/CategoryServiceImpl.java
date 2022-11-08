@@ -32,7 +32,6 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryRepository.findByCategoryNameIgnoreCase(categoryName).isPresent()) {
             throw new DuplicateException(String.format("Category with name %s already exists", categoryName));
         }
-
         try {
             return categoryRepository.save(Category.builder().categoryName(categoryName).build());
         } catch (Exception ex) {

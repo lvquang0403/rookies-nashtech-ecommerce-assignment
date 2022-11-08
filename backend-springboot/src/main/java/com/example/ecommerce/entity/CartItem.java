@@ -21,7 +21,6 @@ public class CartItem extends Item {
     @JoinColumn(name = "cartId")
     private Cart cart;
 
-
     public CartItem(Integer quantity, BigDecimal price, BigDecimal totalPrice,String color, Product product, Cart cart) {
         super(quantity, price, totalPrice,color, product);
         this.cart = cart;

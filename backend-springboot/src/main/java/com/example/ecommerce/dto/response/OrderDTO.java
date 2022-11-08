@@ -3,6 +3,9 @@ package com.example.ecommerce.dto.response;
 import com.example.ecommerce.entity.Order;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+
 @Getter
 @Setter
 @Builder
@@ -10,16 +13,18 @@ import lombok.*;
 @NoArgsConstructor
 public class OrderDTO {
     private Long orderId;
-    private String orderName;
+    private BigDecimal totalPrice;
+    private String shipAddress;
     private String orderPhone;
     private Integer status;
 
     public static OrderDTO fromOrder(Order order){
         return OrderDTO.builder()
                 .orderId(order.getOrderId())
-                .orderName(order.getOrderName())
                 .orderPhone(order.getOrderPhone())
                 .status(order.getOrderState())
+                .shipAddress(order.getShipAddress())
+                .totalPrice(order.getTotalPrice())
                 .build();
     }
 

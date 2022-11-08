@@ -26,7 +26,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<CartItem> cartItems;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customerId")
     private Customer customer;
 

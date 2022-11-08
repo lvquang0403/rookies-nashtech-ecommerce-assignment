@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins="*")
-@RequestMapping("api/v1/order")
+@RequestMapping("api/v1/orders")
 public class OrderController {
     private final OrderService orderService;
 
@@ -37,13 +37,14 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderItemsByOrderId(orderId));
     }
 
-    @GetMapping("/getCustomerOrders")
+    @GetMapping("/customer-orders/{customerId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ListOrderDTO> getCustomerOrders(
+            @PathVariable Long customerId,
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
     ){
-        return ResponseEntity.ok(orderService.getCustomerOrders(pageNumber, pageSize));
+        return ResponseEntity.ok(orderService.getCustomerOrders(pageNumber, pageSize, customerId));
     }
 
     @PutMapping("/{orderId}")
@@ -60,6 +61,13 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(orderDTO));
     }
 
-
+    @PostMapping("create-one")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<OrderDTO> createOrderWithOneItem(
+            @RequestParam Long productId,
+            @RequestParam String color,
+            @RequestBody @Valid OrderPostDTO orderDTO){
+        return ResponseEntity.ok(orderService.createOrderWithOneItem(orderDTO, productId, color));
+    }
 
 }

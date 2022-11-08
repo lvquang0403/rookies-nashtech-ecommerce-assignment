@@ -1,6 +1,8 @@
 package com.example.ecommerce.service.impl;
 
 import com.example.ecommerce.config.security.service.UserDetailsImpl;
+import com.example.ecommerce.dto.request.CartItemPostDTO;
+import com.example.ecommerce.dto.request.ItemPostDTO;
 import com.example.ecommerce.dto.request.OrderPostDTO;
 import com.example.ecommerce.dto.response.ItemViewDTO;
 import com.example.ecommerce.dto.response.ListOrderDTO;
@@ -18,55 +20,143 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final CartItemRepository cartItemRepository;
-    private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ImageRepository imageRepository;
+    private final ProductRepository productRepository;
+    private final CustomerRepository customerRepository;
 
-    public OrderServiceImpl(CartItemRepository cartItemRepository, CartRepository cartRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository, ImageRepository imageRepository) {
+    public OrderServiceImpl(CartItemRepository cartItemRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository, ImageRepository imageRepository, ProductRepository productRepository, CustomerRepository customerRepository) {
         this.cartItemRepository = cartItemRepository;
-        this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.imageRepository = imageRepository;
+        this.productRepository = productRepository;
+        this.customerRepository = customerRepository;
     }
 
+//    @Override
+//    @Transactional
+//    public OrderDTO createOrder(OrderPostDTO orderDTO) {
+//        Customer foundCustomer = customerRepository.findById(orderDTO.getCustomerId())
+//                .orElseThrow(
+//                        () -> new NotFoundException(String.format("Customer with id %s is not found", orderDTO.getCustomerId()))
+//                );
+//        Order newOrder = orderRepository.save(Order.builder()
+//                .shipAddress(orderDTO.getAddress())
+//                .orderState(0)
+//                .orderPhone(orderDTO.getOrderPhone())
+//                .totalPrice(orderDTO.getTotalPrice())
+//                .customer(foundCustomer)
+//                .build());
+//        for (CartItemPostDTO item : orderDTO.getItems()) {
+//            Product foundProduct = productRepository.findById(item.getProductId())
+//                            .orElseThrow(() -> new NotFoundException("Product not found"));
+//            orderItemRepository.save(new OrderItem(
+//                    item.getQuantity(),
+//                    item.getPrice(),
+//                    item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())),
+//                    item.getColor(),
+//                    foundProduct,
+//                    newOrder));
+//        }
+//        cartItemRepository.deleteAllByCartCustomerCustomerId(orderDTO.getCustomerId());
+//        return OrderDTO.fromOrder(orderRepository.save(newOrder));
+//    }
     @Override
     @Transactional
     public OrderDTO createOrder(OrderPostDTO orderDTO) {
-        UserDetailsImpl userDetails =
-                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long customerId = userDetails.getCustomerId();
-        Cart cart = cartRepository.findByCustomerCustomerId(customerId)
-                .orElseThrow(() -> new NotFoundException("Customer not found"));
-        List<CartItem> cartItems = cartItemRepository.findCartItemByCartCartId(cart.getCartId());
-        if (cartItems.isEmpty()) {
-            throw new BadRequestException("don't any product in Cart");
-        }
-        Order newOrder = orderRepository.save(Order.builder()
-                .orderName(orderDTO.getOrderName())
+        Customer foundCustomer = customerRepository.findById(orderDTO.getCustomerId())
+                .orElseThrow(
+                        () -> new NotFoundException(String.format("Customer with id %s is not found", orderDTO.getCustomerId()))
+                );
+        Order newOrder = Order.builder()
                 .shipAddress(orderDTO.getAddress())
                 .orderState(0)
                 .orderPhone(orderDTO.getOrderPhone())
                 .totalPrice(orderDTO.getTotalPrice())
-                .build());
-        for (CartItem item : cartItems) {
-            orderItemRepository.save(new OrderItem(
+                .customer(foundCustomer)
+                .build();
+        Set<OrderItem> orderItemSet = new HashSet<>();
+        for (CartItemPostDTO item : orderDTO.getItems()) {
+            Product foundProduct = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new NotFoundException("Product not found"));
+            orderItemSet.add(new OrderItem(
                     item.getQuantity(),
                     item.getPrice(),
-                    item.getTotalPrice(),
+                    item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())),
                     item.getColor(),
-                    item.getProduct(),
+                    foundProduct,
                     newOrder));
         }
-        cartItemRepository.deleteAllByCartCartId(cart.getCartId());
+        newOrder.setOrderItems(orderItemSet);
+        cartItemRepository.deleteAllByCartCustomerCustomerId(orderDTO.getCustomerId());
+        return OrderDTO.fromOrder(orderRepository.save(newOrder));
+    }
+
+
+//    @Override
+//    @Transactional
+//    public OrderDTO createOrderWithOneItem(OrderPostDTO orderDTO, Long productId, String color) {
+//        Customer foundCustomer = customerRepository.findById(orderDTO.getCustomerId())
+//                .orElseThrow(
+//                        () -> new NotFoundException(String.format("Customer with id %s is not found", orderDTO.getCustomerId()))
+//                );
+//        Product foundProduct = productRepository.findById(productId).orElseThrow(
+//                () -> new NotFoundException(String.format("Product with id %s is not found", productId))
+//        );
+//        Order newOrder = orderRepository.save(Order.builder()
+//                .shipAddress(orderDTO.getAddress())
+//                .orderState(0)
+//                .orderPhone(orderDTO.getOrderPhone())
+//                .totalPrice(orderDTO.getTotalPrice())
+//                .customer(foundCustomer)
+//                .build());
+//        orderItemRepository.save(new OrderItem(
+//                1,
+//                foundProduct.getPrice(),
+//                foundProduct.getPrice(),
+//                color,
+//                foundProduct,
+//                newOrder));
+//        return OrderDTO.fromOrder(orderRepository.save(newOrder));
+//    }
+    @Override
+    @Transactional
+    public OrderDTO createOrderWithOneItem(OrderPostDTO orderDTO, Long productId, String color) {
+        Customer foundCustomer = customerRepository.findById(orderDTO.getCustomerId())
+                .orElseThrow(
+                        () -> new NotFoundException(String.format("Customer with id %s is not found", orderDTO.getCustomerId()))
+                );
+        Product foundProduct = productRepository.findById(productId).orElseThrow(
+                () -> new NotFoundException(String.format("Product with id %s is not found", productId))
+        );
+        Order newOrder = Order.builder()
+                .shipAddress(orderDTO.getAddress())
+                .orderState(0)
+                .orderPhone(orderDTO.getOrderPhone())
+                .totalPrice(orderDTO.getTotalPrice())
+                .customer(foundCustomer)
+                .build();
+        Set<OrderItem> orderItemSet = new HashSet<>();
+        orderItemSet.add(new OrderItem(
+                1,
+                foundProduct.getPrice(),
+                foundProduct.getPrice(),
+                color,
+                foundProduct,
+                newOrder));
+        newOrder.setOrderItems(orderItemSet);
         return OrderDTO.fromOrder(orderRepository.save(newOrder));
     }
 
@@ -86,10 +176,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ListOrderDTO getCustomerOrders(int pageNumber, int pageSize) {
-        UserDetailsImpl userDetails =
-                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long customerId = userDetails.getCustomerId();
+    public ListOrderDTO getCustomerOrders(int pageNumber, int pageSize, Long customerId) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Order> orderPage = orderRepository.findByCustomerCustomerId(customerId, pageable);
         List<Order> orders = orderPage.getContent();

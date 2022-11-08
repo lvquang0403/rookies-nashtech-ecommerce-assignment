@@ -20,7 +20,7 @@ public class Image {
     @Column
     private String color;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "producId")
     private Product product;
 }

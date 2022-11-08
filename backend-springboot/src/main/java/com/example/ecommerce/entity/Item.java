@@ -16,7 +16,7 @@ public abstract class Item {
     private BigDecimal totalPrice;
     private String color;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "productId")
     private Product product;
 

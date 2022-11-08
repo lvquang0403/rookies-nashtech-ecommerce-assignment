@@ -70,7 +70,9 @@ public class AuthController {
                 userDetails.getLastName(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles));
+                roles,
+                userDetails.getPhone(),
+                userDetails.getAddress()));
     }
 
     @PostMapping("/signup")
@@ -96,11 +98,9 @@ public class AuthController {
 
         Set<Role> roles = new HashSet<>();
 
-        roles.forEach(role -> {
-            Role userRole = roleRepository.findByRoleName("ROLE_USER")
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        });
+        Role userRole = roleRepository.findByRoleName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(userRole);
 
         customer.setRoles(roles);
         customerRepository.save(customer);

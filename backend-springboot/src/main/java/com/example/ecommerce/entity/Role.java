@@ -1,5 +1,6 @@
 package com.example.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,5 +21,6 @@ public class Role {
     private String roleName;
 
     @ManyToMany(mappedBy = "roles",cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Customer> customers;
 }

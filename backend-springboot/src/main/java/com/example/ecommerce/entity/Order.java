@@ -30,7 +30,7 @@ public class Order {
     @Column
     private BigDecimal totalPrice;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderItem> orderItems;
 
     @ManyToOne

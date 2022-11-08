@@ -12,6 +12,7 @@ import com.example.ecommerce.repository.*;
 import com.example.ecommerce.service.CartItemService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -39,23 +40,13 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public ListCartItemDTO findByCustomerId(int pageNumber, int pageSize) {
-        UserDetailsImpl userDetails =
-                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long customerId = userDetails.getCustomerId();
+    public ListCartItemDTO findByCustomerId(int pageNumber, int pageSize, Long customerId) {
         Customer foundCustomer = customerRepository.findById(customerId)
                 .orElseThrow(
                         () -> new NotFoundException(String.format("Customer with id %s is not found", customerId))
                 );
-        Date currentDay = Date.valueOf(LocalDate.now());
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        if (cartRepository.findByCustomerCustomerId(customerId).isEmpty()) {
-            foundCustomer.setCart(cartRepository.save(Cart.builder()
-                    .createdDate(currentDay)
-                    .customer(foundCustomer)
-                    .build()));
-        }
-        List<ItemViewDTO> items = cartItemRepository.findCartItemByCartCartId(pageable, foundCustomer.getCart().getCartId())
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("cartItemId"));
+        List<ItemViewDTO> items = cartItemRepository.findCartItemByCartCustomerCustomerId(pageable ,foundCustomer.getCustomerId())
                 .stream()
                 .map(cartItem -> {
                     Optional<Image> image = imageRepository.findByColorIgnoreCaseAndProductProductId(
@@ -81,26 +72,25 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public CartDTO addToCart(ItemPostDTO itemDTO) {
-        UserDetailsImpl userDetails =
-                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long customerId = userDetails.getCustomerId();
+    public void addToCart(ItemPostDTO itemDTO) {
         Product foundProduct = productRepository.findById(itemDTO.getProductId()).orElseThrow(
                 () -> new NotFoundException(String.format("Product with id %s is not found", itemDTO.getProductId()))
         );
+        Customer foundCustomer = customerRepository.findById(itemDTO.getCustomerId()).orElseThrow(
+                () -> new NotFoundException(String.format("Customer with id %s is not found", itemDTO.getProductId()))
+        );
         Date currentDay = Date.valueOf(LocalDate.now());
-        Cart cart = cartRepository.findByCustomerCustomerId(customerId)
-                .orElseGet(() -> {
-                    Cart newCart = cartRepository.save(Cart.builder()
+        Cart cart = cartRepository.findByCustomerCustomerId(itemDTO.getCustomerId())
+                .orElseGet(() -> Cart.builder()
                             .createdDate(currentDay)
-                            .customer(customerRepository.findById(customerId).get())
                             .build());
-                    Optional<Customer> foundCustomer = customerRepository.findById(customerId);
-                    foundCustomer.ifPresent(customer -> customer.setCart(newCart));
-                    return customerRepository.save(foundCustomer.get()).getCart();
-                });
-
-        CartItem foundCartItem = cartItemRepository.findByCartCartIdAndProductProductId(cart.getCartId(), itemDTO.getProductId())
+        foundCustomer.setCart(cart);
+        customerRepository.save(foundCustomer);
+        CartItem foundCartItem = cartItemRepository.findByCartCartIdAndProductProductIdAndColor(
+                foundCustomer.getCart().getCartId(),
+                        itemDTO.getProductId(),
+                        itemDTO.getColor()
+                )
                 .orElse(null);
         //Check Product have correct color
         if (imageRepository.findByColorIgnoreCaseAndProductProductId(itemDTO.getColor(), foundProduct.getProductId()).isEmpty()) {
@@ -113,34 +103,22 @@ public class CartItemServiceImpl implements CartItemService {
                     foundProduct.getPrice(),
                     itemDTO.getColor(),
                     foundProduct,
-                    cart
+                    foundCustomer.getCart()
             );
         } else {
             foundCartItem.setQuantity(foundCartItem.getQuantity() + 1);
             foundCartItem.setTotalPrice(foundCartItem.getPrice().multiply(BigDecimal.valueOf(foundCartItem.getQuantity())));
         }
         cartItemRepository.save(foundCartItem);
-
-        return new CartDTO(cart.getCartId(), currentDay);
     }
 
     @Override
-    public Integer getNumberCartItemsByCustomerId() {
-        UserDetailsImpl userDetails =
-                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long customerId = userDetails.getCustomerId();
-        Date currentDay = Date.valueOf(LocalDate.now());
-        Cart cart = cartRepository.findByCustomerCustomerId(customerId)
-                .orElseGet(() -> {
-                    Cart newCart = cartRepository.save(Cart.builder()
-                            .createdDate(currentDay)
-                            .customer(customerRepository.findById(customerId).get())
-                            .build());
-                    Optional<Customer> foundCustomer = customerRepository.findById(customerId);
-                    foundCustomer.ifPresent(customer -> customer.setCart(newCart));
-                    return customerRepository.save(foundCustomer.get()).getCart();
-                });
-        return cartItemRepository.sumByCartId(cart.getCartId());
+    public Integer getNumberCartItemsByCustomerId(Long customerId) {
+        Customer foundCustomer = customerRepository.findById(customerId)
+                .orElseThrow(
+                        () -> new NotFoundException(String.format("Customer with id %s is not found", customerId))
+                );
+        return cartItemRepository.sumByCustomerId(foundCustomer.getCustomerId());
     }
 
 

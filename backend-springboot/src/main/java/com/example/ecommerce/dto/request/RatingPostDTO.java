@@ -10,6 +10,8 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RatingPostDTO {
+    @NotNull
+    private Long customerId;
     @NotBlank(message = "comment cannot be empty")
     private String comment;
     @Min(0)
