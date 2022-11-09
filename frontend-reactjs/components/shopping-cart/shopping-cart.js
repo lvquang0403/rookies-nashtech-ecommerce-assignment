@@ -5,17 +5,26 @@ import { useUserContext } from "../../context/user-context";
 import CartItem from "../../components/shopping-cart/cart-item";
 import { useCheckoutContext } from "../../context/checkout-context"
 import Link from "next/link";
+import cartService from "../../pages/api/cartService";
 
 function ShoppingCart() {
     const [user, setUser] = useUserContext();
     const [cartItems, setCartItems] = useCheckoutContext()
-
     console.log('aaa', cartItems)
+
+    // useEffect(()=> {
+    //     if(user.id)
+    //     cartService.getCartItems(user.token,user.id)
+    //     .then(res => console.log(res))
+    //     .catch(res => console.log(res))
+    // },[user])
+
     if (cartItems) {
         console.log('bbbb', cartItems.reduce((total, item) => {
             return total + item.totalPrice
         }, 0));
     }
+    console.log(cartItems)
     return (
         <div className="container py-4">
             <div className="row g-3">

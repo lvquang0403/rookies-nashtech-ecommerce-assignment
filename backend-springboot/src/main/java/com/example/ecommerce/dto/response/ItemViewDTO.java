@@ -19,4 +19,5 @@ public class ItemViewDTO {
     private String color;
     private BigDecimal totalPrice;
     private Long productId;
+    private Long categoryId;
 }

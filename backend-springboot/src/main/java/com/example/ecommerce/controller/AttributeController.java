@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,8 +45,8 @@ public class AttributeController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<?> update(
             @PathVariable Long attributeId,
-            @RequestParam String attributeName) {
-        attributeService.update(attributeId, attributeName);
+            @Valid @RequestBody AttributePostDTO attributePostDTO) {
+        attributeService.update(attributeId, attributePostDTO.getAttributeName());
         return ResponseEntity.ok("Successfully");
     }
     @DeleteMapping("{attributeId}")

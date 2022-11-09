@@ -16,11 +16,14 @@ import com.example.ecommerce.service.OrderService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -80,11 +83,13 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(
                         () -> new NotFoundException(String.format("Customer with id %s is not found", orderDTO.getCustomerId()))
                 );
+        Date currentDate = Date.valueOf(LocalDate.now());
         Order newOrder = Order.builder()
                 .shipAddress(orderDTO.getAddress())
                 .orderState(0)
                 .orderPhone(orderDTO.getOrderPhone())
                 .totalPrice(orderDTO.getTotalPrice())
+                .createDay(currentDate)
                 .customer(foundCustomer)
                 .build();
         Set<OrderItem> orderItemSet = new HashSet<>();
@@ -141,11 +146,13 @@ public class OrderServiceImpl implements OrderService {
         Product foundProduct = productRepository.findById(productId).orElseThrow(
                 () -> new NotFoundException(String.format("Product with id %s is not found", productId))
         );
+        Date currentDate = Date.valueOf(LocalDate.now());
         Order newOrder = Order.builder()
                 .shipAddress(orderDTO.getAddress())
                 .orderState(0)
                 .orderPhone(orderDTO.getOrderPhone())
                 .totalPrice(orderDTO.getTotalPrice())
+                .createDay(currentDate)
                 .customer(foundCustomer)
                 .build();
         Set<OrderItem> orderItemSet = new HashSet<>();
@@ -162,7 +169,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ListOrderDTO getOrders(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("orderId"));
         Page<Order> orderPage = orderRepository.findAll(pageable);
         List<Order> orders = orderPage.getContent();
         List<OrderDTO> orderDTOS = orders.stream()
@@ -177,7 +184,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ListOrderDTO getCustomerOrders(int pageNumber, int pageSize, Long customerId) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("orderId"));
         Page<Order> orderPage = orderRepository.findByCustomerCustomerId(customerId, pageable);
         List<Order> orders = orderPage.getContent();
         List<OrderDTO> orderDTOS = orders.stream()
@@ -209,7 +216,8 @@ public class OrderServiceImpl implements OrderService {
                     item.getQuantity(),
                     item.getColor(),
                     item.getTotalPrice(),
-                    item.getProduct().getProductId()
+                    item.getProduct().getProductId(),
+                    item.getProduct().getCategory().getCategoryId()
             ));
         }
         return itemViewDTOS;

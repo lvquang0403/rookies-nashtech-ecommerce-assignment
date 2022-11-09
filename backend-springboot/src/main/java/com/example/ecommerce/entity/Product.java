@@ -23,7 +23,7 @@ public class Product {
     private Long productId;
     @Column
     private String productName;
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
     @Column
     private BigDecimal price;
@@ -39,7 +39,7 @@ public class Product {
 //    @EqualsAndHashCode.Exclude
 //    @ToString.Exclude
 //    private Set<Image> images;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "categoryId")
     private Category category;
 
@@ -56,7 +56,7 @@ public class Product {
 
     @OneToMany
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "orderItem_Id")
+    @JoinColumn(name = "item_Id")
     @JsonIgnore
     private Set<CartItem> cartItems;
 

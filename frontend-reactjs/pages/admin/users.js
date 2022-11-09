@@ -4,18 +4,32 @@ import userService from "../api/userService";
 import { USER_TYPE } from "../../constant/user-type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link"
-
+import NavbarAdmin from "../../components/admin/NavbarAdmin";
+import { PaginationControl } from 'react-bootstrap-pagination-control';
 export default function Users() {
     const [users, setUsers] = useState([])
     const [user, setUser] = useUserContext()
     const [page, setPage] = useState(1)
     const [pageResponse, setPageResponse] = useState({ pageSize: 0, pageNumber: 0, totalPage: 0 })
 
+    const handleRemove = (customerId) => {
+        if (window.confirm("Do you really want to remove this customer?")) {
+            userService.deleteCustomer(user.token, customerId)
+                .then(res => {
+                    const newUsers = users.filter(u => u.customerId !== customerId)
+                    setUsers(newUsers)
+                })
+
+        }
+    }
 
     useEffect(() => {
         if (user.id) {
             userService.getCustomers(user.token, 30, page - 1)
-                .then(res => setUsers(res.data.customers))
+                .then(res => {
+                    setPageResponse(res.data.pageResponse)
+                    setUsers(res.data.customers)
+                })
                 .catch(res => console.log(res))
         }
     }, [user, page])
@@ -23,6 +37,7 @@ export default function Users() {
     console.log(users)
     return (
         <div className="container my-3">
+            <NavbarAdmin />
             <div className="table-responsive">
                 {/* <Head>
                     title
@@ -70,8 +85,10 @@ export default function Users() {
                                             {
 
                                                 user.roles.includes(USER_TYPE.ADMIN) ?
-                                                    <a data-toggle="modal"><FontAwesomeIcon icon={["fas", "trash"]} className="text-danger ms-2 " /></a> :
-                                                    <FontAwesomeIcon icon={["fas", "trash"]} className="text-danger ms-2 " ></FontAwesomeIcon>
+                                                    <div></div> :
+                                                    <div className="d-inline" onClick={() => handleRemove(user.customerId)}>
+                                                        <FontAwesomeIcon icon={["fas", "trash"]} className="text-danger ms-2 " ></FontAwesomeIcon>
+                                                    </div>
                                             }
 
                                         </th>
@@ -82,6 +99,17 @@ export default function Users() {
                     </tbody>
                 </table>
             </div>
+            <nav className="float-end mt-3">
+                <PaginationControl
+                    page={page}
+                    total={pageResponse.pageSize * pageResponse.totalPage}
+                    limit={pageResponse.pageSize}
+                    changePage={(page) => {
+                        setPage(page);
+                    }}
+                    ellipsis={1}
+                />
+            </nav>
         </div>
     )
 }

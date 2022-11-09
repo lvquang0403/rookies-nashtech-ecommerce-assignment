@@ -13,6 +13,21 @@ class AuthService {
         })
 
     }
+
+    signup(data) {
+        return axios
+        .post(`${API_URL}/signup`,
+        {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            address: data.address,
+            phone: data.phone,
+            email: data.email,
+            userName: data.userName,
+            password: data.password
+        })
+
+    }
 }
 
 export default new AuthService();

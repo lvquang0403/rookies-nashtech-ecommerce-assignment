@@ -11,11 +11,11 @@ export function CheckoutProvider({ children }) {
 
     useEffect(() => {
         if (user.id) {
-          cartService.getCartItems(user.token, 20, 0)
+          cartService.getCartItems(user.token, user.id)
             .then(res => setCartItems(res.data.items))
             .catch(res => console.log(res))
         }
-      }, [user])
+      }, [user.numberCartItems])
     return (
         <Context.Provider value={[cartItems, setCartItems, oderInfor, setOrderInfor]}>{children}</Context.Provider>
     );

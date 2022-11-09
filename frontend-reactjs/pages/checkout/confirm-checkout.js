@@ -31,7 +31,7 @@ function ConfirmCheckout() {
     //   pathname: "/checkout/checkout-success",
     // });
     if (productId) {
-      orderService.createOrderOneItem(user.token, product, color, orderInfor)
+      orderService.createOrderOneItem(user.token, product, color, orderInfor, user.id)
       .then(res => {
         setToTalPrice(0)
         router.push({
@@ -40,7 +40,7 @@ function ConfirmCheckout() {
       })
     }
     else {
-      orderService.createOrder(user.token, orderInfor, totalPrice)
+      orderService.createOrder(user.token, orderInfor, totalPrice, cartItems, user.id)
         .then(res => {
           setCartItems([])
           setToTalPrice(0)
@@ -90,10 +90,10 @@ function ConfirmCheckout() {
               <div className="row g-3">
                 <div className="col-md-6">
                   <h4 className="fw-semibold">Shipping Address</h4>
-                  <div className="vstack text-dark small mt-3">
+                  <div className="vstack text-dark small mt-3 fs-6 ">
                     <p><span>Customer Name : </span><span>{orderInfor.customerName}</span></p>
                     <p><span>Customer Phone : </span><span>{orderInfor.phone}</span></p>
-                    <p><span>Adress : </span><span>{orderInfor.address}</span></p>
+                    <p><span>Adress : </span><span>{user.address}</span></p>
                     <p><span>Adress Shipping : </span><span>{orderInfor.address}</span></p>
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.Set;
 
 @Entity
@@ -27,6 +28,8 @@ public class Order {
     private Integer orderState;
     @Column
     private String orderPhone;
+    @Column
+    private Date createDay;
     @Column
     private BigDecimal totalPrice;
 

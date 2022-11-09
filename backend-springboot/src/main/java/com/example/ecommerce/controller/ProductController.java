@@ -28,7 +28,7 @@ public class ProductController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<ListProductViewDTO> getProducts(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "50", required = false) int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "35", required = false) int pageSize
     ) {
         return ResponseEntity.ok(productService.findAll(pageNumber, pageSize));
     }

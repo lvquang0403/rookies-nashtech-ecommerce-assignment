@@ -6,10 +6,12 @@ import { useState, useEffect } from "react";
 import productService from "../../services/product.service";
 import Rating from "../../components/rating/Rating";
 import ratingService from "../api/ratingService";
+import cartService from "../api/cartService";
 import UserRating from "../../components/rating/UserRating";
 import { useUserContext } from "../../context/user-context";
 import React from "react";
 import Link from 'next/link'
+import { useCheckoutContext } from "../../context/checkout-context";
 function ProductDetail() {
   const imagess = [1, 2, 3]
   const [user, setUser] = useUserContext()
@@ -26,15 +28,39 @@ function ProductDetail() {
 
   } = router
 
-  const handleSubmit = (token, productId, score, comment) => {
-    ratingService.createRating(token, productId, score, comment)
-      .then(res => setRatings([...ratings, res.data]))
-      .catch(res => {
-        if (res.response.status === 400) {
-          alert("Bạn đã đánh giá cho sản phẩm này !!")
-        }
+
+  const handleBuy = () => {
+    if (user.type.length === 0) {
+      router.push('/auth/login')
+    }
+    else {
+      router.push({
+        pathname: '/checkout/delivery-info',
+        query: { productId: product.productId, color: color }
       })
+    }
   }
+
+
+  const handleAddToCart = (e, productId, color, quantity) => {
+    console.log(color, productId)
+    if (user.type.length === 0) {
+      router.push('/auth/login')
+    }
+    cartService.addToCart(user.token, productId, color, quantity, user.id)
+      .then(res => {
+        setUser({
+          id: user.id,
+          type: user.type,
+          name: user.name,
+          token: user.token,
+          numberCartItems: user.numberCartItems + quantity
+        })
+      })
+      .catch(res => console.log(res))
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   useEffect(() => {
     if (ratings.length > 0) {
       setAvgRating((ratings.reduce((total, e) => total + e.score, 0) / ratings.length))
@@ -82,19 +108,6 @@ function ProductDetail() {
       <div className="bg-secondary">
         <div className="container">
           <div className="row py-4 px-2">
-            <nav aria-label="breadcrumb col-12">
-              <ol className="breadcrumb mb-1">
-                <li className="breadcrumb-item">
-                  <a href="#">All Categories</a>
-                </li>
-                <li className="breadcrumb-item">
-                  <a href="#">Electronics</a>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  {product.productName}
-                </li>
-              </ol>
-            </nav>
           </div>
         </div>
       </div>
@@ -211,16 +224,15 @@ function ProductDetail() {
                 </dl>
 
                 <div className="d-flex">
-                  <Link href={{ pathname: '/checkout/delivery-info', query: { productId: product.productId,
-                                                                              color: color }}}>
-                    <a
-                      href="#"
-                      className="btn btn-primary px-md-4 col col-md-auto me-2"
-                    >
-                      Buy now
-                    </a>
-                  </Link>
-                  <button className="btn btn-outline-primary col col-md-auto">
+
+                  <div onClick={() => handleBuy()}
+                    href="#"
+                    className="btn btn-primary px-md-4 col col-md-auto me-2"
+                  >
+                    Buy now
+                  </div>
+
+                  <button className="btn btn-outline-primary col col-md-auto" onClick={(e) => handleAddToCart(e, product.productId, color, 1)}>
                     <FontAwesomeIcon icon={["fas", "cart-plus"]} />
                     &nbsp;Add to cart
                   </button>
@@ -245,33 +257,11 @@ function ProductDetail() {
                       Description
                     </a>
                   </li>
-                  <li className="nav-item">
-                    <a href="#" className="nav-link">
-                      Specifications
-                    </a>
-                  </li>
                 </ul>
               </div>
               <div className="card-body">
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Duis ultricies lacus sed turpis tincidunt. Urna cursus eget
-                  nunc scelerisque. Sit amet massa vitae tortor condimentum.
-                  Amet est placerat in egestas erat. Vel quam elementum pulvinar
-                  etiam non quam lacus suspendisse faucibus. Duis at consectetur
-                  lorem donec massa sapien faucibus. Leo integer malesuada nunc
-                  vel risus commodo viverra maecenas. Pellentesque eu tincidunt
-                  tortor aliquam nulla facilisi. Gravida in fermentum et
-                  sollicitudin ac. Amet purus gravida quis blandit turpis cursus
-                  in hac habitasse. Augue mauris augue neque gravida in
-                  fermentum et sollicitudin. Faucibus in ornare quam viverra.
-                  Nisl rhoncus mattis rhoncus urna neque viverra justo. Cras
-                  semper auctor neque vitae. Nulla facilisi morbi tempus
-                  iaculis. Quam vulputate dignissim suspendisse in. Vestibulum
-                  rhoncus est pellentesque elit ullamcorper. Suspendisse
-                  ultrices gravida dictum fusce ut. Lacus vel facilisis volutpat
-                  est velit egestas.
+                        {product.description}
                 </p>
               </div>
               <div className="card-footer py-3">
@@ -301,9 +291,9 @@ function ProductDetail() {
         </div>
       </div>
       <div className="container">
-        <h1>Đánh Giá</h1>
+        <h1 className="mt-3">Reviews</h1>
         <div className="row">
-          {user.id && <Rating productId={product.productId} handleSubmit={handleSubmit} ratings={ratings} />}
+          {user.id && <Rating productId={product.productId} ratings={ratings} setRatings={setRatings} />}
         </div>
         <div className="row">
           {

@@ -25,26 +25,23 @@ function Login() {
     resolver: yupResolver(userSchema)
 });
   const getNumberCartItems = (data) => {
-    console.log(data)
-    cartService.getNumberCartItems(data.token).then(res => {
-      setUser({
-        id: data.customerId,
-        type: data.roles,
-        name: data.lastName,
-        token: data.token,
-        phone: data.phone,
-        address: data.address,
-        numberCartItems: res.data
-      });
+    console.log("data",data)
+    cartService.getNumberCartItems(data.token, data.customerId).then(res => {
+      console.log("res",res.data)
 
-      sessionStorage.setItem("user", JSON.stringify({
+      const user2 = {
         id: data.customerId,
         type: data.roles,
         name: data.lastName,
         token: data.token,
         phone: data.phone,
         address: data.address,
-      }));
+        numberCartItems: res.data ? parseInt(res.data) : 0
+      }
+
+      setUser(user2);
+
+      sessionStorage.setItem("user", JSON.stringify(user2));
 
       router.push('/')
     }
@@ -58,7 +55,7 @@ function Login() {
         getNumberCartItems(res.data);
 
       })
-      .catch(res => alert(res.data))
+      .catch(res => alert("Username or password is not valid"))
   }
   console.log(user)
   return (

@@ -15,7 +15,7 @@ function Header({ simple, hideAuth }) {
   let title = process.env.APP_NAME;
 
   const navigateProfile = () => {
-    router.push("/order")
+    router.push("/profile")
 
   }
 
@@ -113,6 +113,7 @@ function Header({ simple, hideAuth }) {
               (user.type.includes(USER_TYPE.ADMIN) || user.type.includes(USER_TYPE.USER)) && (
 
                 <div>
+                  { user.type.includes(USER_TYPE.ADMIN) && <button type="button" className="btn btn-secondary me-4" onClick={() => router.push("/admin")}>Admin Page</button>}
                   <button type="button" className="btn btn-secondary me-2" onClick={() => navigateProfile()}>Profile</button>
                   <button type="button" className="btn btn-secondary me-2" onClick={() => handleLogout()}>Logout</button>
                   <span>Hello {user.name}</span>

@@ -113,7 +113,6 @@ public class ProductServiceImpl implements ProductService {
                 .productName(productDTO.getProductName())
                 .description(productDTO.getDescription())
                 .price(productDTO.getPrice())
-                .productDetails(productDTO.getProductDetails())
                 .createdDate(currentDate)
                 .category(foundCategory)
                 .build();

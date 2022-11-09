@@ -9,7 +9,6 @@ import com.example.ecommerce.entity.Customer;
 import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.CustomerRepository;
 import com.example.ecommerce.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +21,10 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
-    @Autowired
-    PasswordEncoder encoder;
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    private final PasswordEncoder encoder;
+    public CustomerServiceImpl(CustomerRepository customerRepository, PasswordEncoder encoder) {
         this.customerRepository = customerRepository;
+        this.encoder = encoder;
     }
 
 

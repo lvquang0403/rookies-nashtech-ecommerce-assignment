@@ -26,12 +26,12 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ListOrderDTO> getOrders(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "30", required = false) int pageSize
     ){
         return ResponseEntity.ok(orderService.getOrders(pageNumber, pageSize));
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/order-items/{orderId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<ItemViewDTO>> getOrdersItemById(@PathVariable Long orderId){
         return ResponseEntity.ok(orderService.getOrderItemsByOrderId(orderId));

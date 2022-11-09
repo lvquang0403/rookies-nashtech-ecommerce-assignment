@@ -1,22 +1,39 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { useUserContext } from "../../context/user-context";
+import ratingService from "../../pages/api/ratingService";
 
-const colors = {
-    orange: "#FFBA5A",
-    grey: "#a9a9a9"
-    
-};
 
-function Rating( { productId, handleSubmit, ratings } ) {
+function Rating( { productId , ratings, setRatings } ) {
   const [user, setUser] = useUserContext()
   const [currentValue, setCurrentValue] = useState(0);
   const [hoverValue, setHoverValue] = useState(undefined);
   const [comment, setComment] = useState('')
   const stars = Array(5).fill(0)
-
+  const colors = {
+    orange: "#FFBA5A",
+    grey: "#a9a9a9"
+    
+};
   const handleClick = value => {
     setCurrentValue(value)
+  }
+
+  const handleSubmit = (token, productId, score, comment, customerId) => {
+    if(comment !== ""){
+      ratingService.createRating(token, productId, score, comment, customerId)
+      .then(res => {
+        setRatings([...ratings, res.data])
+      })
+      .catch(res => {
+        if (res.response.status === 400) {
+          alert("You have rated this product !!")
+
+        }
+      })
+      setComment("")
+      setCurrentValue(0)
+    }
   }
 
 //   const handleMouseOver = newHoverValue => {
@@ -31,7 +48,7 @@ function Rating( { productId, handleSubmit, ratings } ) {
 
   return (
     <div style={styles.container}>
-      <h2> Đánh giá sản phẩm </h2>
+      <h2> Rating Product </h2>
       <div style={styles.stars}>
         {stars.map((_, index) => {
           return (
@@ -53,10 +70,11 @@ function Rating( { productId, handleSubmit, ratings } ) {
       <textarea
         placeholder="What's your experience?"
         style={styles.textarea}
+        value={comment}
         onChange={e=> setComment(e.target.value)}
       />
 
-      <button onClick={() => handleSubmit(user.token, productId, currentValue, comment)}
+      <button onClick={() => handleSubmit(user.token, productId, currentValue, comment, user.id)}
         style={styles.button}
       >
         Submit

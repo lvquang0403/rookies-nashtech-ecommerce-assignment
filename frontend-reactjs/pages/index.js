@@ -28,6 +28,7 @@ export default function Home() {
 
     });
   }, []);
+  console.log(products)
   return (
     <div>
       <div className="container py-3">

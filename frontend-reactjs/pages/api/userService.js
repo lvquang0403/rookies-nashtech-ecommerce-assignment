@@ -58,7 +58,7 @@ class CustomerService {
     }
 
 
-    deleteCustomer(customerId) {
+    deleteCustomer(token,customerId) {
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

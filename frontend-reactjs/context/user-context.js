@@ -8,6 +8,8 @@ export function UserProvider({ children }) {
         id: null,
         type: [],
         name: '',
+        address:'',
+        phone:'',
         token: '',
         numberCartItems: 0
     });

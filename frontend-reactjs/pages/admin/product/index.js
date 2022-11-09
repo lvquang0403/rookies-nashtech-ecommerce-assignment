@@ -7,10 +7,10 @@ import productService from "../../api/productService";
 import { set } from "react-hook-form";
 
 function AddProduct() {
-    const[attributeList, setAtributeList] = useState([])
-    const[categoryList, setCategoryList] = useState([])
-    const[attributesMap, setAttributesMap] = useState({})
-    const[product, setProduct] = useState({})
+    const [attributeList, setAtributeList] = useState([])
+    const [categoryList, setCategoryList] = useState([])
+    const [attributesMap, setAttributesMap] = useState({})
+    const [product, setProduct] = useState({})
     const router = useRouter()
     const {
         query: { id },
@@ -25,50 +25,54 @@ function AddProduct() {
         attributesMap: attributesMap,
         images: []
     }
-    useEffect(()=> {
-        if(id){
+    useEffect(() => {
+        if (id) {
             productService.getDetaiProduct(id)
-            .then(res => setProduct({
-                productName: res.data.productName,
-                description: res.data.description,
-                price: res.data.price,
-                categoryId: res.data.categoryId,
-                attributes: res.data.attributes,
-                attributesMap: attributesMap,
-                images: res.data.images
-            }))
+                .then(res => setProduct({
+                    productName: res.data.productName,
+                    description: res.data.description,
+                    price: res.data.price,
+                    categoryId: res.data.categoryId,
+                    attributes: res.data.attributes,
+                    attributesMap: attributesMap,
+                    images: res.data.images
+                }))
         }
-        else{
+        else {
             setProduct(initialProduct)
         }
     }, [id])
     console.log(product)
-    useEffect(()=> {
+    useEffect(() => {
         attributeService.getAttributes()
-        .then(res => {
-            setAtributeList(res.data);
+            .then(res => {
+                setAtributeList(res.data);
 
-            const attributes = {};
-            res.data.forEach(a => {
-                attributes[a.attributeId.toString()] = '';
+                const attributes = {};
+                res.data.forEach(a => {
+                    attributes[a.attributeId.toString()] = '';
+                })
+
+                setAttributesMap(attributes)
             })
-        
-            setAttributesMap(attributes)
-        })
     }, [])
 
-    useEffect(()=> {
+    useEffect(() => {
         categoryService.getCategorys()
-        .then(res => setCategoryList(res.data))
+            .then(res => setCategoryList(res.data))
     }, [])
 
     return (
-        <ProductForm initialProduct={product} 
-        update = {id}
-        categoryList={categoryList}
-        attributeList={attributeList}
-        setProduct = {setProduct}
-        ></ProductForm>
+        <div className="container">
+            <div><button className="btn btn-dark  my-2 px-4 py-2" onClick={() => router.back()}>Back</button></div>
+            <ProductForm initialProduct={product}
+                update={id}
+                categoryList={categoryList}
+                attributeList={attributeList}
+                setProduct={setProduct}
+                productId={id}
+            ></ProductForm>
+        </div>
     );
 }
 

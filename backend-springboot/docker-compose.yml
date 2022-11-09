@@ -1,13 +1,29 @@
+version: "3.8"
+
 services:
   postgres:
-    container_name: postgres
+    container_name: postgres-database-ecommerce
     image: postgres
     environment:
       POSTGRES_USER: ecommerce
       POSTGRES_DB: ecommerce
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - '5432:5432'
+    volumes:
+      - /app:/docker-entrypoint-initdb.d
     restart: unless-stopped
-volumes:
-  postgres:
+    networks:
+      - backend
+  backend-ecommerce:
+    image: lvquang0403/ecommerce-nashtech-backend
+    container_name: ecommerce-backend
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./:/app
+    networks:
+      - backend
+networks:
+  backend:
+    name: springboot-app-network

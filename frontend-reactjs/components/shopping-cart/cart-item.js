@@ -14,7 +14,17 @@ function CartItem({ item }) {
     cartService.removeCartItem(user.token, item.id)
     .then(res => {
       setCartItems(newCarts)
+      setUser({...user, numberCartItems: user.numberCartItems - item.quantity})
     })
+  }
+
+  const updateNumberCartItemsAndSetCartItems = (newCart) => {
+    cartService.getNumberCartItems(user.token, user.id)
+    .then(res => {
+      setCartItems(newCart)
+      setUser({...user, numberCartItems: res.data})
+    })
+    .catch(res => console.log(res))
   }
 
   const handleUpdateCartItem = (quantity, item) => {
@@ -32,9 +42,7 @@ function CartItem({ item }) {
       return c;
     })
     cartService.updateCartItem(user.token, item.id, quantity)
-    .then(res => {
-      setCartItems(newCart)
-    })
+    .then(res => updateNumberCartItemsAndSetCartItems(newCart))
     // console.log(setCartItems)
   }
   const getQtyInput = () => {

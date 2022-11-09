@@ -26,6 +26,16 @@ function DeliveryInfo() {
   } = router.query
 
   useEffect(() => {
+    if(user == null){
+      router.push("/auth/login")
+      
+    }
+  },[user])
+
+  useEffect(() => {
+    setValue("customerName", user.name)
+    setValue("phone", user.phone)
+    setValue("address", user.address)
     if (productId) {
       productService.getDetaiProduct(productId)
         .then(res => {
@@ -37,8 +47,8 @@ function DeliveryInfo() {
       setToTalPrice(cartItems.reduce((total, item) => total + item.totalPrice, 0))
     }
 
-  }, [productId, cartItems])
-
+  }, [productId, cartItems, user])
+  console.log(user)
   const onSubmit = data => {
     console.log(productId)
     setOrderInfor(data)
@@ -67,10 +77,6 @@ function DeliveryInfo() {
   const { register, setValue, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: yupResolver(userSchema)
   });
-  setValue("customerName", user.name)
-  setValue("phone", user.phone)
-  setValue("address", user.address)
-  console.log(cartItems)
   return (
     <div className="container py-4">
       <div className="row">

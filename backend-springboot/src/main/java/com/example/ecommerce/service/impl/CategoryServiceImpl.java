@@ -32,17 +32,12 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryRepository.findByCategoryNameIgnoreCase(categoryName).isPresent()) {
             throw new DuplicateException(String.format("Category with name %s already exists", categoryName));
         }
-        try {
-            return categoryRepository.save(Category.builder().categoryName(categoryName).build());
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex.getCause());
-            return null;
-        }
+        return categoryRepository.save(Category.builder().categoryName(categoryName).build());
     }
 
     @Override
     public List<Category> findAll(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("categoryName"));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("categoryId"));
         return categoryRepository.findAll(pageable).getContent();
     }
 
@@ -61,12 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (!category.getCategoryName().isEmpty()) {
             foundCategory.setCategoryName(category.getCategoryName());
         }
-        try {
-            return categoryRepository.save(foundCategory);
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex.getCause());
-            return null;
-        }
+        return categoryRepository.save(foundCategory);
     }
 
     @Override
@@ -74,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id %s is not found", categoryId)));
         if (productRepository.countProductByCategoryId(categoryId) > 0) {
-            throw new StillRelationException(String.format("Category with id %s still referent to another Product", categoryId));
+            throw new StillRelationException(String.format("Category  still referent to another Product", categoryId));
         } else {
             categoryRepository.deleteById(foundCategory.getCategoryId());
         }

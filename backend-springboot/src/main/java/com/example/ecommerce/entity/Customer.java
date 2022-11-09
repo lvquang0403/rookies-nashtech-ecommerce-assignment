@@ -42,8 +42,10 @@ public class Customer {
     @JoinColumn(name = "cartId")
     private Cart cart;
     @OneToMany(mappedBy = "customer")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Rating> ratings;
     @OneToMany(mappedBy = "customer")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Order> orders;
 
 }

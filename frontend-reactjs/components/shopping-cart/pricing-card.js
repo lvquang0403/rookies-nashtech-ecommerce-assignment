@@ -17,10 +17,6 @@ function PricingCard({ totalPrice, end, handleConfirm, productId }) {
             <span>Discount:</span>
             <span className="text-danger">-</span>
           </div>
-          <div className="d-flex justify-content-between">
-            <span>Delivery charge:</span>
-            <span className="text-success">+2,000Ks</span>
-          </div>
 
           <hr className="text-muted" />
 

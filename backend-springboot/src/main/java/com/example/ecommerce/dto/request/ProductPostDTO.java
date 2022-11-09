@@ -19,13 +19,12 @@ import java.util.List;
 public class ProductPostDTO {
     @NotBlank(message = "ProductName cannot be empty")
     private String productName;
+    @NotEmpty
     private String description;
     @NotNull(message = "price cannot be empty")
     @Min(value = 0, message = "min price of product is 0")
     private BigDecimal price;
     private List<ImageDTO> images;
-    @NotEmpty
-    private String productDetails;
     @Valid
     private List<AttributeDTO> attributes;
     @NotNull(message = "categoryId cannot be null")

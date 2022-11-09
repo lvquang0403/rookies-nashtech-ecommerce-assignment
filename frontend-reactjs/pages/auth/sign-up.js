@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Layout from "../../components/layout";
-import * as yup from 'yup'
+import * as Yup from 'yup';
 import { useForm } from "react-hook-form";
 import authService from "../api/authService";
 import { useRouter } from "next/router";
@@ -13,11 +13,22 @@ function SignUp() {
 
 
   const handleResgister = data => {
-    console.log(data)
+    authService.signup(data)
+    .then(res => {
+      router.push("/auth/signup-success")
+    })
+    .catch(res => alert(res.response.data))
   };
-  const userSchema = yup.object().shape({
-    userName: yup.string().required("User Name is required").min(6).max(12),
-    password: yup.string().required("Password is required").min(6).max(15)
+  const userSchema = Yup.object().shape({
+    firstName: Yup.string().required(),
+    lastName: Yup.string().required(),
+    email: Yup.string().required(),
+    address: Yup.string().required(),
+    phone: Yup.string().required(),
+    userName: Yup.string().required("User Name is required").min(6).max(12),
+    password: Yup.string().required("Password is required").min(6).max(15),
+    confirmPass: Yup.string()
+    .oneOf([Yup.ref('password'), null], 'Passwords must match')
   })
   const { register, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: yupResolver(userSchema)
@@ -33,35 +44,42 @@ function SignUp() {
                 <div className="col-md-6">
                   <label className="form-label">First Name</label>
                   <input type="text" className="form-control" {...register("firstName")}/>
-                  <span className="error text-danger">{errors.userName?.message}</span>
+                  <span className="error text-danger">{errors.firstName?.message}</span>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Last Name</label>
                   <input type="text" className="form-control"{...register("lastName")} />
+                  <span className="error text-danger">{errors.lastName?.message}</span>
                 </div>
                 <div className="col-md-12">
                   <label className="form-label">Email</label>
                   <input type="email" className="form-control" {...register("email")} />
+                  <span className="error text-danger">{errors.email?.message}</span>
                 </div>
                 <div className="col-md-12">
                 <label className="form-label">Address</label>
                 <input type="text" className="form-control" {...register("address")} />
+                <span className="error text-danger">{errors.address?.message}</span>
                 </div>
                 <div className="col-md-12">
                 <label className="form-label">Phone</label>
-                <input type="text" className="form-control" {...register("phone")} />
+                <input type="number" className="form-control" {...register("phone")} />
+                <span className="error text-danger">{errors.phone?.message}</span>
                 </div>
                 <div className="col-md-12">
                 <label className="form-label">User Name</label>
-                <input type="email" className="form-control" {...register("userName")}  />
+                <input type="text" className="form-control" {...register("userName")}  />
+                <span className="error text-danger">{errors.userName?.message}</span>
                 </div>
                 <div className="col-md-12">
                 <label className="form-label">Password</label>
                 <input type="password" className="form-control" {...register("password")} />
+                <span className="error text-danger">{errors.password?.message}</span>
                 </div>
                 <div className="col-md-12">
                   <label className="form-label">Confirm Password</label>
                   <input type="password" className="form-control"  {...register("confirmPass")}/>
+                  <span className="error text-danger">{errors.confirmPass?.message}</span>
                 </div>
                 <div className="col-md-12 mt-4">
                   <input className="btn btn-primary w-100" type="submit" value="Register"/>

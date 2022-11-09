@@ -64,7 +64,8 @@ public class CartItemServiceImpl implements CartItemService {
                             cartItem.getQuantity(),
                             cartItem.getColor(),
                             cartItem.getTotalPrice(),
-                            cartItem.getProduct().getProductId()
+                            cartItem.getProduct().getProductId(),
+                            cartItem.getProduct().getCategory().getCategoryId()
                     );
                 }).collect(Collectors.toList());
 
@@ -83,6 +84,7 @@ public class CartItemServiceImpl implements CartItemService {
         Cart cart = cartRepository.findByCustomerCustomerId(itemDTO.getCustomerId())
                 .orElseGet(() -> Cart.builder()
                             .createdDate(currentDay)
+                            .customer(foundCustomer)
                             .build());
         foundCustomer.setCart(cart);
         customerRepository.save(foundCustomer);

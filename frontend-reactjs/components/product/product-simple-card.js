@@ -13,13 +13,11 @@ function ProductSimpleCard({ product, categoryId }) {
     if(user.type.length ===0 ){
       router.push('/auth/login')
     }
-    cartService.addToCart(user.token, productId, color, quantity)
+    cartService.addToCart(user.token, productId, color, quantity, user.id)
     .then(res => {
-      setUser({
-        id: user.id,
-        type: user.type,
-        name: user.name,
-        token: user.token,
+      console.log("user",user.numberCartItems)
+      console.log(quantity)
+      setUser({...user,
         numberCartItems: user.numberCartItems + quantity
       })
     })
@@ -29,6 +27,7 @@ function ProductSimpleCard({ product, categoryId }) {
 
   useEffect(() => {
   }, [])
+
   return (
     <div className="card h-100 border-0 shadow-sm">
       <div className="ratio ratio-1x1">
@@ -49,7 +48,7 @@ function ProductSimpleCard({ product, categoryId }) {
           </a>
         </Link>
 
-        <ProductRating avgRating={product.numberRating} />
+        <ProductRating numberRating={product.numberRating} />
 
         <h6 className="mb-0 fw-semibold mt-2">{new Intl.NumberFormat('de-DE').format(product.price)} VND</h6>
       </div>

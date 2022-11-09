@@ -16,6 +16,7 @@ public class OrderDTO {
     private BigDecimal totalPrice;
     private String shipAddress;
     private String orderPhone;
+    private Date createDay;
     private Integer status;
 
     public static OrderDTO fromOrder(Order order){
@@ -25,6 +26,7 @@ public class OrderDTO {
                 .status(order.getOrderState())
                 .shipAddress(order.getShipAddress())
                 .totalPrice(order.getTotalPrice())
+                .createDay(order.getCreateDay())
                 .build();
     }
 

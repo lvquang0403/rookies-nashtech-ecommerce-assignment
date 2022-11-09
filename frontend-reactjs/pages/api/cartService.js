@@ -1,19 +1,19 @@
 import axios from "axios"
 
-const API_URL = "http://localhost:8080/api/v1/cart"
+const API_URL = "http://localhost:8080/api/v1/carts"
 
 class CartService {
 
-    getNumberCartItems(token) {
+    getNumberCartItems(token, customerId) {
         return axios
-            .get(`${API_URL}/number-cart-items`, {
+            .get(`${API_URL}/number-cart-items/${customerId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
     }
 
-    addToCart(token, productId, color, quantity) {
+    addToCart(token, productId, color, quantity, customerId) {
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -22,6 +22,7 @@ class CartService {
             .post(API_URL,
                 {
                     productId,
+                    customerId,
                     color,
                     quantity
 
@@ -67,7 +68,7 @@ class CartService {
 
     }
 
-    getCartItems(token, pageSize, pageNumber) {
+    getCartItems(token, customerId) {
         // const config = {
         //     headers: {
         //         'Authorization': `Bearer ${token}`,
@@ -79,7 +80,7 @@ class CartService {
         // //     pageNumber
         // // }
         return axios
-            .get(`${API_URL}/cart-items`, {
+            .get(`${API_URL}/cart-items/${customerId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
