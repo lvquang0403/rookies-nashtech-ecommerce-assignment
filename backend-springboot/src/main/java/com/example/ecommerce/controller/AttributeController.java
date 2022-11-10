@@ -27,7 +27,6 @@ public class AttributeController {
     }
 
     @GetMapping("/getByProductId/{productId}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     ResponseEntity<List<AttributeDTO>> getAttributesByProductId(
             @PathVariable Long productId
     ) {

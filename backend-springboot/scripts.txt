@@ -1,1 +1,2 @@
-docker run --name postgres3 -e POSTGRES_USER=ecommerce -e POSTGRES_PASSWORD=password -p 5432:5432 -v ${app}:/docker-entrypoint-initdb.d -d postgres
+docker run --name postgres3 -e POSTGRES_USER=ecommerce -e POSTGRES_PASSWORD=password -p 5432:5432 -v ${data}:/docker-entrypoint-initdb.d -d postgres
+host.docker.internal

@@ -11,7 +11,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - /app:/docker-entrypoint-initdb.d
+      - ./data:/docker-entrypoint-initdb.d
     restart: unless-stopped
     networks:
       - backend
