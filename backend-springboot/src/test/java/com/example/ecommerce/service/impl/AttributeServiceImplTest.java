@@ -5,6 +5,7 @@ import com.example.ecommerce.dto.request.AttributePostDTO;
 import com.example.ecommerce.entity.*;
 import com.example.ecommerce.exception.DuplicateException;
 import com.example.ecommerce.exception.NotFoundException;
+import com.example.ecommerce.exception.StillRelationException;
 import com.example.ecommerce.repository.AttributeProductRepository;
 import com.example.ecommerce.repository.AttributeRepository;
 import com.example.ecommerce.repository.ProductRepository;
@@ -92,6 +93,22 @@ class AttributeServiceImplTest {
     }
 
     @Test
+    void testDeleteByIdWhenStillHaveReferentShouldThrowException() {
+        Long foundAttributeId = 1L;
+        Attribute foundAttribute = Attribute.builder().attributeId(foundAttributeId).build();
+        Mockito.when(attributeRepository.findById(foundAttributeId))
+                .thenReturn(Optional.of(foundAttribute));
+        Mockito.when(attributeProductRepository.countAttributeProductByAttributeAttributeId(foundAttributeId))
+                .thenReturn(2);
+
+        StillRelationException relationException = Assertions.assertThrows(StillRelationException.class,
+                () -> attributeService.deleteById(foundAttributeId));
+
+        assertThat(relationException.getMessage()).isEqualTo(
+                "Attribute with id 1 still referent to another Product");
+    }
+
+    @Test
     void testUpdateByIdWhenFoundAttributeShouldUpdateNewValue() {
         Long foundAttributeId = 1L;
         Attribute foundAttribute = Attribute.builder().attributeName("old-name").build();
@@ -117,6 +134,16 @@ class AttributeServiceImplTest {
     }
 
     @Test
-    void deleteById() {
+    void testDeleteByIdWhenHaveNoReferentShouldDeleteSuccess() {
+        Long foundAttributeId = 2L;
+        Attribute foundAttribute = Attribute.builder().attributeId(foundAttributeId).build();
+        Mockito.when(attributeRepository.findById(foundAttributeId))
+                .thenReturn(Optional.of(foundAttribute));
+        Mockito.when(attributeProductRepository.countAttributeProductByAttributeAttributeId(foundAttributeId))
+                .thenReturn(0);
+
+        attributeService.deleteById(foundAttributeId);
+
+        Mockito.verify(attributeRepository).deleteById(2L);
     }
 }
