@@ -11,10 +11,10 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./data:/docker-entrypoint-initdb.d
+      - ./app:/docker-entrypoint-initdb.d
     restart: unless-stopped
     networks:
-      - backend
+      - app
   backend-ecommerce:
     image: lvquang0403/ecommerce-nashtech-backend
     container_name: ecommerce-backend
@@ -23,7 +23,14 @@ services:
     volumes:
       - ./:/app
     networks:
-      - backend
+      - app
+  frontend-ecommerce:
+    image: lvquang0403/ecommerce-frontend-nextjs
+    container_name: ecommerce-frontend
+    ports:
+      - '3000:3000'
+    networks:
+      - app
 networks:
-  backend:
+  app:
     name: springboot-app-network
