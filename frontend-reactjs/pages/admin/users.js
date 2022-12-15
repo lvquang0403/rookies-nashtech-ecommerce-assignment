@@ -19,6 +19,7 @@ export default function Users() {
                     const newUsers = users.filter(u => u.customerId !== customerId)
                     setUsers(newUsers)
                 })
+                .catch(res => alert(res.response.data.message))
 
         }
     }

@@ -47,7 +47,7 @@ public class CustomerController {
 
     @DeleteMapping("{customerId}")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<?> updateCustomer(
+    ResponseEntity<?> deleteCustomer(
             @PathVariable Long customerId
     ) {
         customerService.deleteCustomer(customerId);

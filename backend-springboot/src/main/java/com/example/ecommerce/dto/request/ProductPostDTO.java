@@ -17,17 +17,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductPostDTO {
-    @NotBlank(message = "ProductName cannot be empty")
+    @NotBlank(message = "Product Name cannot be empty")
     private String productName;
-    @NotEmpty
     private String description;
     @NotNull(message = "price cannot be empty")
     @Min(value = 0, message = "min price of product is 0")
     private BigDecimal price;
+    @Valid
+    @NotEmpty(message = "Please choose and update image")
     private List<ImageDTO> images;
     @Valid
     private List<AttributeDTO> attributes;
-    @NotNull(message = "categoryId cannot be null")
+    @NotNull(message = "Please chose Category")
     private Long categoryId;
 
 }

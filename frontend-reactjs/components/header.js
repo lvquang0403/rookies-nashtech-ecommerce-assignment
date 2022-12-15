@@ -13,12 +13,18 @@ function Header({ simple, hideAuth }) {
   const userContext = useUserContext()
   const [user, setUser] = userContext ? userContext : [{ type: [] }, () => null];
   let title = process.env.APP_NAME;
-
+  useEffect(() => {
+    if(router.pathname.startsWith("/admin")){
+      if(!user.type.includes(USER_TYPE.ADMIN)){
+        router.push("/not-found")
+      }
+    }
+  })
   const navigateProfile = () => {
     router.push("/profile")
 
   }
-
+  
   const featuresAdmin = ["Product", "User", "Category"];
 
   const handleLogout = () => {

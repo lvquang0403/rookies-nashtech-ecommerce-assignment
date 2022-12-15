@@ -6,10 +6,15 @@ import static org.mockito.ArgumentMatchers.any;
 import com.example.ecommerce.dto.request.CustomerPutDTO;
 import com.example.ecommerce.dto.response.CustomerViewDTO;
 import com.example.ecommerce.entity.Customer;
+import com.example.ecommerce.entity.Rating;
 import com.example.ecommerce.exception.NotFoundException;
 import com.example.ecommerce.repository.CustomerRepository;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+
+import com.example.ecommerce.repository.OrderRepository;
+import com.example.ecommerce.repository.RatingRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +26,19 @@ class CustomerServiceImplTest {
 
     private CustomerServiceImpl customerService;
     private CustomerRepository customerRepository;
+    private OrderRepository orderRepository;
+    private RatingRepository ratingRepository;
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void beforeEach() {
         customerRepository = Mockito.mock(CustomerRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
-        customerService = new CustomerServiceImpl(customerRepository, passwordEncoder);
+        ratingRepository = Mockito.mock(RatingRepository.class);
+        orderRepository = Mockito.mock(OrderRepository.class);
+
+        customerService = new CustomerServiceImpl(customerRepository, passwordEncoder,
+                orderRepository, ratingRepository);
     }
 
     @Test
@@ -59,6 +70,8 @@ class CustomerServiceImplTest {
     void testDeleteCustomerWhenFoundCustomerShouldDeleteSuccess() {
         Long foundCustomerId = 1L;
         Customer foundCustomer = new Customer();
+        List<Rating> ratingList = List.of(Mockito.mock(Rating.class));
+        Mockito.when(ratingRepository.findAllByCustomerCustomerId(2l)).thenReturn(ratingList);
         Mockito.when(customerRepository.findById(foundCustomerId))
                 .thenReturn(Optional.of(foundCustomer));
 
@@ -69,9 +82,11 @@ class CustomerServiceImplTest {
 
     @Test
     void testDeleteCustomerWhenNotFoundCustomerShouldThrowException() {
+        Long customerId = 2L;
+        List<Rating> ratingList = List.of(Mockito.mock(Rating.class));
+        Mockito.when(ratingRepository.findAllByCustomerCustomerId(2l)).thenReturn(ratingList);
         NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class,
                 () -> customerService.deleteCustomer(2L));
-
         assertThat(notFoundException.getMessage()).isEqualTo("Customer Not Found");
     }
 

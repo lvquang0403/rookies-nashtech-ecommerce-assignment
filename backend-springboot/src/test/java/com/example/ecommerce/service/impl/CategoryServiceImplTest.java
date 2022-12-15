@@ -54,7 +54,11 @@ class CategoryServiceImplTest {
         Mockito.when(categoryRepository.findByCategoryNameIgnoreCase(validCategoryName))
                 .thenReturn(Optional.empty());
         Mockito.when(categoryRepository.save(any(Category.class)))
-                .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+                .thenAnswer(invocationOnMock -> {
+                    Category category1 = invocationOnMock.getArgument(0);
+                    return category1;
+                }
+                );
 
         Category actual = categoryService.createCategory(category);
 

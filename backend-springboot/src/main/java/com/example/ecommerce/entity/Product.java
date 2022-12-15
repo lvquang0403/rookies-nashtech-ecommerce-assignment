@@ -55,8 +55,8 @@ public class Product {
     private Set<Rating> ratings;
 
     @OneToMany
+    @JoinColumn()
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "item_Id")
     @JsonIgnore
     private Set<CartItem> cartItems;
 

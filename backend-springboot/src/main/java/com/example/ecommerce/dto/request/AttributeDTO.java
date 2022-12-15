@@ -16,7 +16,7 @@ public class AttributeDTO {
     @NotNull(message = "attributeId cannot be empty")
     private Long attributeId;
     private String attributeName;
-    @NotBlank(message = "value cannot be empty")
+    @NotBlank(message = "Value of attribute cannot be empty")
     private String value;
 
     public AttributeDTO(Long attributeId, String attributeName) {

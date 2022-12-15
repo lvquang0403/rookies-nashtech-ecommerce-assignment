@@ -78,7 +78,7 @@ public class AttributeServiceImpl implements AttributeService {
                 () -> new NotFoundException(String.format("Attribute with id : %d is not found",attributeId))
         );
         if(attributeProductRepository.countAttributeProductByAttributeAttributeId(attributeId) > 0){
-            throw new StillRelationException(String.format("Attribute with id %s still referent to another Product",attributeId));
+            throw new StillRelationException(String.format("Attribute still referent to another Product",attributeId));
         }
         attributeRepository.deleteById(foundAttribute.getAttributeId());
     }

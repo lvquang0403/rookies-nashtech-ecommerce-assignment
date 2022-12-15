@@ -11,9 +11,9 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageDTO {
-    @NotBlank
+    @NotBlank(message = "Please chose color")
     private String color;
-    @NotBlank
+    @NotBlank(message = "Please upload image")
     private String url;
 
     public static ImageDTO fromImage(Image image){

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RatingRepository extends JpaRepository<Rating, Long> {
@@ -13,6 +14,7 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
             "inner join r.product p " +
             "WHERE p.productId = ?1")
     Page<Rating> findAllByProductId(Pageable pageable, Long productId);
+    List<Rating> findAllByCustomerCustomerId(Long customerId);
     Optional<Rating> findByProductProductIdAndCustomerCustomerId(Long productId, Long customerId);
     @Query(value = "SELECT AVG (r.score) From Rating r " +
             "inner join r.product p " +

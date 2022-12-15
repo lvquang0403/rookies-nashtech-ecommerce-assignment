@@ -59,17 +59,6 @@ const EditUser = () => {
                     {/* <span className="error text-danger">{errors.userName?.message}</span> */}
                   </div>
                   <div className="col-md-12">
-                    <label className="form-label">Email</label>
-                    <input
-                      // value={username} onChange={(e) => setUsername(e.target.value)}
-                      value={editUser.email} onChange={(e) => setEditUser({...editUser,email: e.target.value})}
-                      className="form-control"
-                    //  {...register("userName")}
-                      placeholder="lastName"
-                    />
-                    {/* <span className="error text-danger">{errors.userName?.message}</span> */}
-                  </div>
-                  <div className="col-md-12">
                     <label className="form-label">Address</label>
                     <input
                         value={editUser.address} onChange={(e) => setEditUser({...editUser,address: e.target.value})}

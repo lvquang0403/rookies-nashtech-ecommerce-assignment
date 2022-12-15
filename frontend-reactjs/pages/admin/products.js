@@ -57,6 +57,8 @@ export default function Users() {
                             <th>Name</th>
                             <th>Price</th>
                             <th>Images</th>
+                            <th>Create day</th>
+                            <th>Update day</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -88,6 +90,8 @@ export default function Users() {
                                         })
 
                                     }</th>
+                                    <th>{product.createDay}</th>
+                                    <th>{product.updateDay}</th>
                                     <th>
                                         <Link href={{ pathname: `product`, query: { id: product.productId } }}>
                                             <a><FontAwesomeIcon icon={["fas", "edit"]} className="text-info me-3 " >Edit</FontAwesomeIcon></a>

@@ -17,7 +17,12 @@ const OrdersAdmin = () => {
     const [orders, setOrders] = useState([])
     const [orderItems, setOrderItems] = useState([])
 
+    useEffect(()=>{
+        if(orderItems.length > 0){
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+        }
 
+    },[orderItems])
     const updateStatusOrder = (e, order) => {
         var status = null;
         if (e.target.value === '0') {

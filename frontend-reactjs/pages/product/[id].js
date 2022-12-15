@@ -167,11 +167,6 @@ function ProductDetail() {
                   </span>
                 </div>
                 <h4 className="fw-semibold">{new Intl.NumberFormat('de-DE').format(product.price)} VND</h4>
-                <p className="fw-light">
-                  Lorem ipsum is placeholder text commonly used in the graphic,
-                  print, and publishing industries for previewing layouts and
-                  visual mockups.
-                </p>
                 <dl className="row mb-0">
                   {attributes && (
                     <div>

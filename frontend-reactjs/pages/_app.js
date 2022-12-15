@@ -10,6 +10,7 @@ import Layout from "../components/layout";
 import { UserProvider } from "../context/user-context";
 import { CheckoutProvider } from "../context/checkout-context"
 import { useEffect } from "react"
+import Head from "next/head"
 
 config.autoAddCss = false;
 library.add(fab, fas, far);
@@ -28,9 +29,13 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <UserProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+      <Head>
+        <title>Apple Store</title>
+      </Head>
+      <Layout>
+
+        <Component {...pageProps} />
+      </Layout>
     </UserProvider>
   );
 }

@@ -14,6 +14,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     Page<CartItem> findCartItemByCartCartId(Pageable pageable, Long cartId);
     Page<CartItem> findCartItemByCartCustomerCustomerId(Pageable pageable,Long customerId);
     Optional<CartItem> findByCartCartIdAndCartItemId(Long cartId, Long cartItemId);
+    List<CartItem> findAllByProductProductId(Long productId);
     @Query(value = "SELECT SUM (c.quantity) from CartItem c where c.cart.customer.customerId = ?1")
     Integer sumByCustomerId(Long customerId);
     void deleteAllByCartCustomerCustomerId(Long customerId);

@@ -36,8 +36,9 @@ public class ProductServiceImpl implements ProductService {
     private final RatingRepository ratingRepository;
     private final RatingService ratingService;
     private final OrderItemRepository orderItemRepository;
+    private final CartItemRepository cartItemRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, AttributeRepository attributeRepository, AttributeProductRepository attributeProductRepository, ImageRepository imageRepository, RatingRepository ratingRepository, RatingService ratingService, OrderItemRepository orderItemRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, AttributeRepository attributeRepository, AttributeProductRepository attributeProductRepository, ImageRepository imageRepository, RatingRepository ratingRepository, RatingService ratingService, OrderItemRepository orderItemRepository, CartItemRepository cartItemRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.attributeRepository = attributeRepository;
@@ -46,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
         this.ratingRepository = ratingRepository;
         this.ratingService = ratingService;
         this.orderItemRepository = orderItemRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
 //    @Override
@@ -149,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ListProductViewDTO findAll(int pageNumber, int pageSize) {
         log.debug("Request to findAll Product (Paging)");
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("productName"));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("productId"));
         Page<Product> productPage = productRepository.findAll(pageable);
         List<ProductViewHomeDTO> productDTOs = productPage.getContent().stream().map(
                 product -> new ProductViewHomeDTO(
@@ -160,7 +162,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getImages().stream().map(ImageDTO::fromImage).collect(toList()),
                 product.getProductDetails(),
                 product.getCategory().getCategoryId(),
-                product.getCategory().getCategoryName()
+                product.getCategory().getCategoryName(),
+                        product.getCreatedDate(),
+                        product.getUpdatedDate()
         )).collect(toList());
         PageResponse pageResponse = new PageResponse(pageSize, pageNumber, productPage.getTotalPages());
         return new ListProductViewDTO(pageResponse, productDTOs);
@@ -195,7 +199,9 @@ public class ProductServiceImpl implements ProductService {
                             product.getProductDetails(),
                             product.getCategory().getCategoryId(),
                             product.getCategory().getCategoryName(),
-                            numberRating
+                            numberRating,
+                            product.getCreatedDate(),
+                            product.getUpdatedDate()
                     );
                 }).collect(toList());
         PageResponse pageResponse = new PageResponse(pageSize, pageNumber, productPage.getTotalPages());
@@ -372,7 +378,9 @@ public class ProductServiceImpl implements ProductService {
                             product.getProductDetails(),
                             product.getCategory().getCategoryId(),
                             product.getCategory().getCategoryName(),
-                            numberRating
+                            numberRating,
+                            product.getCreatedDate(),
+                            product.getUpdatedDate()
                     );
                 }).collect(toList());
         PageResponse pageResponse = new PageResponse(pageSize, pageNumber, productPage.getTotalPages());
@@ -384,7 +392,10 @@ public class ProductServiceImpl implements ProductService {
         Product foundProduct = productRepository.findById(id)
                 .orElseThrow(() ->
                         new NotFoundException(String.format("Product with id : %s is not found", id)));
-
+        List<CartItem> cartItems = cartItemRepository.findAllByProductProductId(id);
+        if(!cartItems.isEmpty()){
+            cartItemRepository.deleteAll(cartItems);
+        }
         if(!orderItemRepository.findAllByProductProductId(id).isEmpty()){
             throw new StillRelationException("Product still is a order Item in an other Order");
         }

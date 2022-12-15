@@ -64,9 +64,9 @@ const Attributes = () => {
                                         <th>{at.attributeId}</th>
                                         <th>{at.attributeName}</th>
                                         <th>
-                                            <div>
+                                            <div className="d-flex">
 
-                                                <div onClick={() => handleUpdate(at.attributeId)}><FontAwesomeIcon icon={["fas", "edit"]} className="text-info" ></FontAwesomeIcon></div>
+                                                <div onClick={() => handleUpdate(at.attributeId)}><FontAwesomeIcon icon={["fas", "edit"]} className="text-info me-3" ></FontAwesomeIcon></div>
                                                 <div className="" onClick={() => handleRemove(at.attributeId)}>
                                                     <FontAwesomeIcon icon={["fas", "trash"]} className="text-danger" ></FontAwesomeIcon>
                                                 </div>

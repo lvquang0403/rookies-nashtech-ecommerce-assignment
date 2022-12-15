@@ -122,7 +122,13 @@ function ProductForm({ initialProduct, attributeList, categoryList, update, setP
                 .then(res => {
                     alert("Update Successfully")
                     router.push("/admin/products")})
-                .catch(res => console.log(res))
+                .catch(res => {
+                    var message =''
+                    for (const property in res.response.data.data) {
+                        message += res.response.data.data[property]+"\n";
+                      }
+                    alert(message)
+                })
         }
         else {
             initialProduct.images = colorList
@@ -134,7 +140,13 @@ function ProductForm({ initialProduct, attributeList, categoryList, update, setP
                     alert("Create Successfully")
                     router.push("/admin/products")
                 })
-                .catch(res => console.log(res))
+                .catch(res => {
+                    var message =''
+                    for (const property in res.response.data.data) {
+                        message += res.response.data.data[property]+"\n";
+                      }
+                    alert(message)
+                })
         }
 
         // productService.addProduct(user.token, values)

@@ -37,7 +37,6 @@ function ExploreProducts() {
         <div className="row g-3">
           <div className="col-lg-12">
             <div className="hstack justify-content-between mb-3">
-              <span className="text-dark">33 Items found</span>
               <div className="btn-group" role="group">
               </div>
             </div>

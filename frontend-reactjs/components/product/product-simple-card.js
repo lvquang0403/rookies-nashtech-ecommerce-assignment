@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/link-passhref */
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProductRating from "../product-rating";
-import axios from "axios";
 import { useUserContext } from "../../context/user-context";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -9,19 +9,20 @@ import cartService from "../../pages/api/cartService";
 function ProductSimpleCard({ product, categoryId }) {
   const router = useRouter();
   const [user, setUser] = useUserContext();
-  const handleAddToCart = (e,productId, color, quantity) => {
-    if(user.type.length ===0 ){
+  const handleAddToCart = (e, productId, color, quantity) => {
+    if (user.type.length === 0) {
       router.push('/auth/login')
     }
     cartService.addToCart(user.token, productId, color, quantity, user.id)
-    .then(res => {
-      console.log("user",user.numberCartItems)
-      console.log(quantity)
-      setUser({...user,
-        numberCartItems: user.numberCartItems + quantity
+      .then(res => {
+        console.log("user", user.numberCartItems)
+        console.log(quantity)
+        setUser({
+          ...user,
+          numberCartItems: user.numberCartItems + quantity
+        })
       })
-    })
-    .catch(res => console.log(res))
+      .catch(res => console.log(res))
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -30,22 +31,28 @@ function ProductSimpleCard({ product, categoryId }) {
 
   return (
     <div className="card h-100 border-0 shadow-sm">
-      <div className="ratio ratio-1x1">
-        <img
-          className="card-img-top"
-          src={product.images[0].url}
-          alt="Product image."
-          style={{ objectFit: "cover" }}
-        />
-      </div>
+      <Link href={{
+        pathname: `/product/${product.productId}?categoryId=${categoryId}`,
+        query: { categoryId: categoryId },
+      }}>
+        <div className="ratio ratio-1x1" onClick={() => {}}>
+          <img
+            className="card-img-top"
+            src={product.images[0].url}
+            alt="Product image."
+            style={{ objectFit: "cover" }}
+          />
+        </div>
+      </Link>
+
       <div className="card-body">
         <Link href={{
           pathname: `/product/${product.productId}?categoryId=${categoryId}`,
           query: { categoryId: categoryId },
-          }}>
-          <a className="mb-1 text-dark text-decoration-none">
-            {product.productName}
-          </a>
+        }}>
+        <a className="mb-1 text-dark text-decoration-none">
+          {product.productName}
+        </a>
         </Link>
 
         <ProductRating numberRating={product.numberRating} />

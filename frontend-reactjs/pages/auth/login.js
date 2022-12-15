@@ -18,7 +18,7 @@ function Login() {
   const [user, setUser] = useUserContext();
 
   const userSchema = yup.object().shape({
-    userName: yup.string().required("User Name is required").min(6).max(12),
+    userName: yup.string().required("User Name is required").min(6).max(15),
     password: yup.string().required("Password is required").min(6).max(15)
   })
   const { register, handleSubmit, watch, formState: { errors } } = useForm({

@@ -70,9 +70,11 @@ const Categories = () => {
                                         <th>{category.categoryId}</th>
                                         <th>{category.categoryName}</th>
                                         <th>
-                                            <div>
+                                            <div className="d-flex">
 
-                                                <div onClick={() => handleUpdate(category.categoryId)}><FontAwesomeIcon icon={["fas", "edit"]} className="text-info" ></FontAwesomeIcon></div>
+                                                <div onClick={() => handleUpdate(category.categoryId)}><FontAwesomeIcon icon={["fas", "edit"]} className="text-info me-4" >
+                                                    
+                                                    </FontAwesomeIcon></div>
                                                 <div className="" onClick={() => handleRemove(category.categoryId)}>
                                                     <FontAwesomeIcon icon={["fas", "trash"]} className="text-danger" ></FontAwesomeIcon>
                                                 </div>

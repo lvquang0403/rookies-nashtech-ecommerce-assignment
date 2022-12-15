@@ -14,9 +14,19 @@ function CartItem({ item }) {
     cartService.removeCartItem(user.token, item.id)
     .then(res => {
       setCartItems(newCarts)
-      setUser({...user, numberCartItems: user.numberCartItems - item.quantity})
+      setUser({...user, numberCartItems: newCarts.length})
     })
   }
+
+  // const handleIncrement = (item) => {
+  //   item.quantity + 1;
+  //   const newCarts = cartItems.filter(e => e.id != item.id);
+
+  // }
+
+  // const handleReduce = (item) => {
+
+  // }
 
   const updateNumberCartItemsAndSetCartItems = (newCart) => {
     cartService.getNumberCartItems(user.token, user.id)
@@ -26,8 +36,10 @@ function CartItem({ item }) {
     })
     .catch(res => console.log(res))
   }
-
   const handleUpdateCartItem = (quantity, item) => {
+    if (quantity == '') {
+      quantity=1;
+    }
     // if (!isNaN(quantity)) {
     //   return
     // }
@@ -43,14 +55,15 @@ function CartItem({ item }) {
     })
     cartService.updateCartItem(user.token, item.id, quantity)
     .then(res => updateNumberCartItemsAndSetCartItems(newCart))
+    .then(res => console.log(res))
     // console.log(setCartItems)
   }
   const getQtyInput = () => {
     return (
       <div className="input-group input-group-sm">
-        <button className="btn btn-outline-primary" type="button">
-          <FontAwesomeIcon icon={["fas", "minus"]} />
-        </button >
+        {/* <button className="btn btn-outline-primary" type="button">
+          <FontAwesomeIcon icon={["fas", "minus"]} onClick ={() => handleReduce(item)} />
+        </button > */}
         <input
           type="number"
           step={1}
@@ -64,9 +77,9 @@ function CartItem({ item }) {
           // value={cartItem.quantity}
           size="2"
         />
-        <button className="btn btn-outline-primary" type="button" >
-          <FontAwesomeIcon icon={["fas", "plus"]} />
-        </button>
+        {/* <button className="btn btn-outline-primary" type="button" >
+          <FontAwesomeIcon icon={["fas", "plus"]} onClick ={() => handleIncrement(item)} />
+        </button> */}
       </div>
     );
   };

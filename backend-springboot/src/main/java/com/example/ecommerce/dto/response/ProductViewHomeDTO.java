@@ -4,6 +4,7 @@ import com.example.ecommerce.dto.ImageDTO;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 
 @Getter
@@ -21,9 +22,11 @@ public class ProductViewHomeDTO {
     private Long categoryId;
     private String categoryName;
     private int numberRating;
+    private Date createDay;
+    private Date updateDay;
 
 
-    public ProductViewHomeDTO(Long productId, String productName, String description, BigDecimal price, List<ImageDTO> images, String productDetails, Long categoryId, String categoryName) {
+    public ProductViewHomeDTO(Long productId, String productName, String description, BigDecimal price, List<ImageDTO> images, String productDetails, Long categoryId, String categoryName, Date createDay, Date updateDay) {
         this.productId = productId;
         this.productName = productName;
         this.description = description;
@@ -32,5 +35,7 @@ public class ProductViewHomeDTO {
         this.productDetails = productDetails;
         this.categoryId = categoryId;
         this.categoryName = categoryName;
+        this.createDay = createDay;
+        this. updateDay = updateDay;
     }
 }

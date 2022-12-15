@@ -24,7 +24,6 @@ function DeliveryInfo() {
     productId,
     color
   } = router.query
-
   useEffect(() => {
     if(user == null){
       router.push("/auth/login")
@@ -32,10 +31,14 @@ function DeliveryInfo() {
     }
   },[user])
 
-  useEffect(() => {
+  useEffect(()=> {
     setValue("customerName", user.name)
     setValue("phone", user.phone)
     setValue("address", user.address)
+  },[])
+
+
+  useEffect(() => {
     if (productId) {
       productService.getDetaiProduct(productId)
         .then(res => {
@@ -50,9 +53,8 @@ function DeliveryInfo() {
   }, [productId, cartItems, user])
   console.log(user)
   const onSubmit = data => {
-    console.log(productId)
+    console.log(data)
     setOrderInfor(data)
-    setCartItems(cartItems)
     if (productId) {
       router.push({
         pathname: '/checkout/confirm-checkout',

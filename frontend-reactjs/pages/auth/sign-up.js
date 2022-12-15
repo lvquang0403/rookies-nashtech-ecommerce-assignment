@@ -20,15 +20,15 @@ function SignUp() {
     .catch(res => alert(res.response.data))
   };
   const userSchema = Yup.object().shape({
-    firstName: Yup.string().required(),
-    lastName: Yup.string().required(),
-    email: Yup.string().required(),
-    address: Yup.string().required(),
-    phone: Yup.string().required(),
-    userName: Yup.string().required("User Name is required").min(6).max(12),
+    firstName: Yup.string().required("First Name is required"),
+    lastName: Yup.string().required("Last Name is required"),
+    email: Yup.string().required("Email is required"),
+    address: Yup.string().required("Address is required"),
+    phone: Yup.string().required("Phone is required"),
+    userName: Yup.string().required("User Name is required").min(6).max(15),
     password: Yup.string().required("Password is required").min(6).max(15),
     confirmPass: Yup.string()
-    .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    .oneOf([Yup.ref('password'), null], 'Confirm Password not match')
   })
   const { register, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: yupResolver(userSchema)

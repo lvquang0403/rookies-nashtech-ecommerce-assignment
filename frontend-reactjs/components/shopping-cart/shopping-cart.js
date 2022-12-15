@@ -4,6 +4,7 @@ import PricingCard from "../../components/shopping-cart/pricing-card";
 import { useUserContext } from "../../context/user-context";
 import CartItem from "../../components/shopping-cart/cart-item";
 import { useCheckoutContext } from "../../context/checkout-context"
+import { useRouter } from 'next/router'
 import Link from "next/link";
 import cartService from "../../pages/api/cartService";
 
@@ -11,6 +12,7 @@ function ShoppingCart() {
     const [user, setUser] = useUserContext();
     const [cartItems, setCartItems] = useCheckoutContext()
     console.log('aaa', cartItems)
+    const router = useRouter()
 
     // useEffect(()=> {
     //     if(user.id)
@@ -18,6 +20,16 @@ function ShoppingCart() {
     //     .then(res => console.log(res))
     //     .catch(res => console.log(res))
     // },[user])
+
+    const handleCheckout = () =>{
+        if(cartItems.length === 0){
+            alert("Cart is Empty")
+        }
+        else{
+            router.push("checkout/delivery-info")
+        }
+        
+    }
 
     if (cartItems) {
         console.log('bbbb', cartItems.reduce((total, item) => {
@@ -76,10 +88,8 @@ function ShoppingCart() {
                     <PricingCard totalPrice={cartItems ? cartItems.reduce((total, item) => {
                         return total + item.totalPrice
                     }, 0) : 0} />
-                    <div className="d-grid gap-2 mt-2">
-                        <Link href="/checkout/delivery-info">
+                    <div className="d-grid gap-2 mt-2" onClick={() => handleCheckout()}>
                             <a className="btn btn-primary">Checkout</a>
-                        </Link>
                     </div>
                 </div>
             </div>

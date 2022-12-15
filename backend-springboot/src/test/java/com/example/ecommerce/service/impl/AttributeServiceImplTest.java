@@ -43,6 +43,7 @@ class AttributeServiceImplTest {
     @Test
     void testFindByProductIdWhenProductNotExistShouldThrowException() {
         Long notFoundProductId = 200L;
+        Mockito.when(productRepository.findById())
         NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class,
                 () -> attributeService.findByProductId(notFoundProductId));
         assertThat(notFoundException.getMessage()).isEqualTo("Product with id : 200 is not found");
@@ -105,7 +106,7 @@ class AttributeServiceImplTest {
                 () -> attributeService.deleteById(foundAttributeId));
 
         assertThat(relationException.getMessage()).isEqualTo(
-                "Attribute with id 1 still referent to another Product");
+                "Attribute still referent to another Product");
     }
 
     @Test

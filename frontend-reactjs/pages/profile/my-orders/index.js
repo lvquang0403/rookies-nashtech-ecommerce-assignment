@@ -18,6 +18,13 @@ const Orders = () => {
 
   }
 
+  useEffect(()=>{
+    if(orderItems.length > 0){
+        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+    }
+
+},[orderItems])
+
   useEffect(() => {
     if (user.id) {
       orderService.getOrderCustomers(user.token, user.id)

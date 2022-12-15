@@ -15,13 +15,12 @@ const Profile = () => {
     const [user, setUser] = useUserContext()
     const router = useRouter()
     const userSchema = Yup.object().shape({
-        firstName: Yup.string().required(),
-        lastName: Yup.string().required(),
-        email: Yup.string().required(),
-        address: Yup.string().required(),
-        phone: Yup.string().required(),
+        firstName: Yup.string().required('First Name is required'),
+        lastName: Yup.string().required('Last Name is required'),
+        address: Yup.string().required('Address is required'),
+        phone: Yup.string().required('Phone is required'),
         confirmPass: Yup.string()
-            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+            .oneOf([Yup.ref('password'), null],  'Confirm Passwords not match')
     })
     const { register, setValue, handleSubmit, watch, getValues, formState: { errors } } = useForm({
         resolver: yupResolver(userSchema)
@@ -44,7 +43,7 @@ const Profile = () => {
     const handleShow = () => setShow(true);
 
     const handleUpdate = (data) => {
-        setShow(true)
+            setShow(true)
     }
 
     const update = () => {
@@ -127,18 +126,6 @@ const Profile = () => {
                                         placeholder="lastName"
                                     />
                                     <span className="error text-danger">{errors.lastName?.message}</span>
-                                    {/* <span className="error text-danger">{errors.userName?.message}</span> */}
-                                </div>
-                                <div className="col-md-12">
-                                    <label className="form-label">Email</label>
-                                    <input
-                                        {...register("email")}
-                                        // value={username} onChange={(e) => setUsername(e.target.value)}
-                                        className="form-control"
-                                        //  {...register("userName")}
-                                        placeholder="Email"
-                                    />
-                                    <span className="error text-danger">{errors.email?.message}</span>
                                     {/* <span className="error text-danger">{errors.userName?.message}</span> */}
                                 </div>
                                 <div className="col-md-12">

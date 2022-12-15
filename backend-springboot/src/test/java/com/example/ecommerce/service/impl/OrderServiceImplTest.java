@@ -85,6 +85,8 @@ class OrderServiceImplTest {
         ListOrderDTO actual = orderService.getOrders(1, 2);
 
         assertThat(actual.getOrders()).hasSize(1);
+        assertThat(actual.getOrders().get(0).getOrderPhone()).isEqualTo("phone");
+        assertThat(actual.getOrders().get(0).getOrderName()).isEqualTo("order-name");
         assertThat(actual.getPageResponse().getPageNumber()).isEqualTo(1);
         assertThat(actual.getPageResponse().getPageSize()).isEqualTo(2);
         assertThat(actual.getPageResponse().getTotalPage()).isEqualTo(3);
